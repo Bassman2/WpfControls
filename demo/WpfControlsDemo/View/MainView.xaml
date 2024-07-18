@@ -4,9 +4,78 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfControlsDemo.View"
+        xmlns:ctl="clr-namespace:WpfControls.Controls;assembly=WpfControls"
+        xmlns:vm="clr-namespace:WpfControlsDemo.ViewModel"
+        d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-
+        <TabControl>
+            <TabItem Header="ExtendedDataGrid">
+                <ctl:ExtendedDataGrid
+                    ItemsSource="{Binding Items}"
+                    CanUserSortRows="True"
+                    AutoGenerateColumns="False"
+                    Margin="8">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
+                        <DataGridTextColumn Header="Description" Binding="{Binding Description}"/>
+                    </DataGrid.Columns>
+                </ctl:ExtendedDataGrid>
+                
+            </TabItem>
+            <TabItem Header="DataGrid Columns">
+                <DataGrid 
+                    ItemsSource="{Binding Items}"
+                    AutoGenerateColumns="False"
+                    Margin="8">
+                    <DataGrid.Columns>
+                        <ctl:DataGridButtonColumn Header="DataGridButtonColumn" Command="{Binding ButtonCommand}" />
+                        <ctl:DataGridColorColumn Header="DataGridColorColumn" Binding="{Binding Color}" />
+                        <ctl:DataGridPasswordColumn Header="DataGridPasswordColumn" Binding="{Binding Password}" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+            <TabItem Header="DataGrid Filter">
+                <DataGrid 
+                     ItemsSource="{Binding FilterItems}"
+                     AutoGenerateColumns="False"
+                     Margin="8">
+                    <DataGrid.Resources>
+                        <ctl:BindingProxy x:Key="proxy" Data="{Binding}" />
+                    </DataGrid.Resources>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
+                        <ctl:DataGridFilterTextColumn Header="DataGridFilterTextColumn" Binding="{Binding FilterEnum}" FilterEnum="{x:Type vm:EnumFilter}" FilterValue="{Binding Data.FilterEnumValue, Source={StaticResource proxy}}"/>
+                        <ctl:DataGridFilterTextColumn Header="DataGridFilterTextColumn" Binding="{Binding FilterList}" FilterItems="{Binding Data.FilterListItems, Source={StaticResource proxy}}" FilterValue="{Binding Data.FilterListValue, Source={StaticResource proxy}}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+            <TabItem Header="Numeric">
+                <Grid Margin="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="120"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Label Grid.Row="0" Grid.Column="0" Content="IntegerSlider"/>
+                    <ctl:IntegerSlider Grid.Row="0" Grid.Column="1" Increment="5" Minimum="1" Maximum="100" Value="{Binding IntegerSliderValue}"/>
+                    <Label Grid.Row="1" Grid.Column="0" Content="DoubleSlider"/>
+                    <ctl:DoubleSlider Grid.Row="1" Grid.Column="1" Value="{Binding DoubleSliderValue}"  Increment="0.5" Minimum="1.0" Maximum="100.0"/>
+                    <Label Grid.Row="2" Grid.Column="0" Content="IntegerSpin"/>
+                    <ctl:IntegerSpin Grid.Row="2" Grid.Column="1" Value="{Binding IntegerSpinValue}" Increment="5" Minimum="1" Maximum="100"/>
+                    <Label Grid.Row="3" Grid.Column="0" Content="DoubleSpin"/>
+                    <ctl:DoubleSpin Grid.Row="3" Grid.Column="1" Value="{Binding DoubleSpinValue}" Increment="0.5" Minimum="1.0" Maximum="100.0"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Other">
+                
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>

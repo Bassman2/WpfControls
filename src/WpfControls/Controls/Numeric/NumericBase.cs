@@ -1,6 +1,22 @@
-﻿using System.Numerics;
+﻿namespace WpfControls.Controls;
 
-namespace WpfControls.Controls;
+// used for themes selection
+public abstract class NumericSlider<T> : NumericBase<T> where T : IFormattable
+{
+    static NumericSlider()
+    {
+        DefaultStyleKeyProperty.OverrideMetadata(typeof(NumericSlider<T>), new FrameworkPropertyMetadata(typeof(NumericSlider<T>)));
+    }
+}
+
+// used for themes selection
+public abstract class NumericSpin<T> : NumericBase<T> where T : IFormattable
+{
+    static NumericSpin()
+    {
+        DefaultStyleKeyProperty.OverrideMetadata(typeof(NumericSpin<T>), new FrameworkPropertyMetadata(typeof(NumericSpin<T>)));
+    }
+}
 
 public abstract class NumericBase<T> : Control where T : IFormattable
 {
@@ -257,7 +273,8 @@ public abstract class NumericBase<T> : Control where T : IFormattable
         dynamic value = newValue;
         value = Math.Max(value, (dynamic)this.Minimum);
         value = Math.Min(value, (dynamic)this.Maximum);
-        value = Math.Round(value / (dynamic)this.Increment) * this.Increment;
+        //double x = value / (dynamic)this.Increment;
+        //var res = Math.Round(x) * (dynamic)this.Increment;
         return value;
     }
 

@@ -14,8 +14,8 @@ My WPF Controls
 ## Numeric controls
 * IntegerSlider
 * DoubleSlider
-* IntegerUpDown
-* DoubleUpDown (spin)
+* IntegerSpin
+* DoubleSpin
 
 ## Other
 * EnumComboBox

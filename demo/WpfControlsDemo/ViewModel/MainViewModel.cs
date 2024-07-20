@@ -5,6 +5,14 @@ public partial class MainViewModel : ObservableObject
 {
     public MainViewModel()
     {
+        AutoFilterItems = [
+            new("Peter", "Peters Description", Enum1.Active, Enum2.Green),
+            new("PaulS", "PaulS Description", Enum1.Inactive, Enum2.Green),
+            new("Susie", "Susie Description", Enum1.Active, Enum2.Blue),
+            new("UllyS", "UllyS Description", Enum1.Removed, Enum2.Blue),
+            new("Diete", "Diete Description", Enum1.Active, Enum2.Green),
+            ];
+
         this.FilterListItems =
         [
             new FilterItem("Empty"),
@@ -29,6 +37,8 @@ public partial class MainViewModel : ObservableObject
             
     }
 
+    [ObservableProperty]
+    private ObservableCollection<AutoFilterItemViewModel> autoFilterItems;
 
 
     [ObservableProperty]

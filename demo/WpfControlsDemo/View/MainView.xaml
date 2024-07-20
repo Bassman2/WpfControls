@@ -11,6 +11,23 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid>
         <TabControl>
+            <TabItem Header="Auto Filter">
+                <ctl:ExtendedDataGrid
+                    AutoFilter="True"
+                    ItemsSource="{Binding AutoFilterItems}"
+                    CanUserSortRows="True"
+                    AutoGenerateColumns="False"                    
+                    Margin="8">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
+                        <DataGridTextColumn Header="Description" Binding="{Binding Description}"/>
+                        <ctl:DataGridAutoFilterEnumColumn Header="Enum A" Binding="{Binding Enum1}"/>
+                        <ctl:DataGridAutoFilterEnumColumn Header="Enum B" Binding="{Binding Enum2}"/>
+                    </DataGrid.Columns>
+                </ctl:ExtendedDataGrid>
+
+            </TabItem>
+            <!--
             <TabItem Header="ExtendedDataGrid">
                 <ctl:ExtendedDataGrid
                     ItemsSource="{Binding Items}"
@@ -73,6 +90,7 @@
                     <ctl:DoubleSpin Grid.Row="3" Grid.Column="1" Value="{Binding DoubleSpinValue}" Increment="0.5" Minimum="1.0" Maximum="100.0"/>
                 </Grid>
             </TabItem>
+            -->
             <TabItem Header="Other">
                 
             </TabItem>

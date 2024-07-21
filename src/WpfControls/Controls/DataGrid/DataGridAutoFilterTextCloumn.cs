@@ -108,6 +108,9 @@ public class DataGridAutoFilterTextColumn : DataGridTextColumn, IFilterColumn
         }
     }
 
+    public void SetFilterEnumType(Type enumType)
+    { }
+
     private void Update()
     {
         if (filterComboBox != null && filters != null)

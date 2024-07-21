@@ -1,5 +1,8 @@
 ﻿
 
+using System.Data.Common;
+using System.Windows.Data;
+
 namespace WpfControls.Controls;
 
 public partial class ExtendedDataGrid : DataGrid
@@ -39,29 +42,28 @@ public partial class ExtendedDataGrid : DataGrid
             {
                 foreach (IFilterColumn column in this.Columns.Where(c => c is IFilterColumn))
                 {
-                    
-                    Type type = column.Binding.GetType();
-                    PropertyPath? propertyPath = (PropertyPath?)(type.GetProperty("Path")!.GetValue(column.Binding));
-                    string propertyName = propertyPath!.Path;
+                    Type? type = GetBindingType(column.Binding, obj);
 
-                    var l = TypeDescriptor.GetProperties(obj);
-                    var n0 = l[0];
-                    var n1 = l[1];
-                    var n2 = l[2];
-                    var n3= l[3];
-                    var n = l[propertyName];
-                    var x = l.Find(propertyName, false);
-                    Type enumType = n!.PropertyType;
-                    //n!.AddValueChanged(obj, OnValueChanged);
+                    if (type!.IsEnum)
+                    {
+                        column.SetFilterEnumType(type!);
+                    }
+                    else
+                    {
+                        
+                    }
+                    string? val = GetBindingText(column.Binding, obj);
 
-                    //(()).AddValueChanged(this.AssociatedObject.DataContext, PropertyListener_ValueChanged);
+                    SetBindingHandler(column.Binding, obj, OnValueChanged);
+                                        
                 }
             }
         }
     }
 
+   
 
-    private void OnValueChanged(object sender, EventArgs e)
+    private void OnValueChanged(object? sender, EventArgs e)
     {
         // Do some stuff here..
     }
@@ -92,4 +94,36 @@ public partial class ExtendedDataGrid : DataGrid
         return true;
 
     }
+
+
+    #region Binding Helper
+    private static Type? GetBindingType(BindingBase binding, object obj)
+    {
+        string propertyName = ((Binding)binding).Path.Path;
+        PropertyDescriptor? property = TypeDescriptor.GetProperties(obj).Find(propertyName, false);
+        return property?.PropertyType;
+    }
+
+    private static object? GetBindingValue(BindingBase binding, object obj)
+    {
+        string propertyName = ((Binding)binding).Path.Path;
+        PropertyDescriptor? property = TypeDescriptor.GetProperties(obj).Find(propertyName, false);
+        return property?.GetValue(obj);
+    }
+
+    private static string? GetBindingText(BindingBase binding, object obj)
+    {
+        string propertyName = ((Binding)binding).Path.Path;
+        PropertyDescriptor? property = TypeDescriptor.GetProperties(obj).Find(propertyName, false);
+        return property?.GetValue(obj)?.ToString();
+    }
+
+    private void SetBindingHandler(BindingBase binding, object obj, EventHandler handler)
+    {
+        string propertyName = ((Binding)binding).Path.Path;
+        PropertyDescriptor? property = TypeDescriptor.GetProperties(obj).Find(propertyName, false);
+        property?.AddValueChanged(obj, handler);
+    }
+
+    #endregion
 }

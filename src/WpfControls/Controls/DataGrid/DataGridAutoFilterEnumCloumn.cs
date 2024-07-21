@@ -99,6 +99,12 @@ public class DataGridAutoFilterEnumColumn : DataGridTextColumn, IFilterColumn
         }
     }
 
+    public void SetFilterEnumType(Type enumType)
+    {
+        this.filters = Enum.GetValues(enumType).Cast<object>().Select(e => new FilterViewModel(e)).ToList();
+        Update();
+    }
+
     private void Update()
     {
         if (filterComboBox != null && filters != null)

@@ -1,8 +1,8 @@
 ﻿namespace WpfControls.Controls;
 
-public class DataGridAutoFilterEnumColumn : DataGridTextColumn, IFilterColumn
+public class DataGridAutoFilterTextColumn : DataGridTextColumn, IFilterColumn
 {
-    public DataGridAutoFilterEnumColumn()
+    public DataGridAutoFilterTextColumn()
     {
         IsReadOnly = true;
         var headerTemplate = new DataTemplate() { DataType = typeof(string) };
@@ -30,10 +30,10 @@ public class DataGridAutoFilterEnumColumn : DataGridTextColumn, IFilterColumn
     }
 
     public int FilterBitmask { get; set; }
-
     private ComboBox? filterComboBox;
     private List<FilterViewModel>? filters;
     private readonly FilterViewModel allFilter = new();
+
 
     public void OnLoaded(object sender, RoutedEventArgs e)
     {
@@ -52,6 +52,23 @@ public class DataGridAutoFilterEnumColumn : DataGridTextColumn, IFilterColumn
         Update();
 
         DataGrid dg = DataGridOwner;
+    }
+
+    public void ItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue)
+    { }
+
+    public bool Filter(object obj)
+    {
+        return true;
+    }
+
+    protected override void OnBindingChanged(BindingBase oldBinding, BindingBase newBinding)
+    {
+        if (newBinding != null && newBinding is Binding binding)
+        {
+            binding.Converter = new DescriptionConverter();
+        }
+        base.OnBindingChanged(oldBinding, newBinding);
     }
 
     public void OnChecked(object sender, RoutedEventArgs e)
@@ -100,10 +117,7 @@ public class DataGridAutoFilterEnumColumn : DataGridTextColumn, IFilterColumn
     }
 
     public void SetFilterEnumType(Type enumType)
-    {
-        this.filters = Enum.GetValues(enumType).Cast<object>().Select(e => new FilterViewModel(e)).ToList();
-        Update();
-    }
+    { }
 
     private void Update()
     {
@@ -112,6 +126,49 @@ public class DataGridAutoFilterEnumColumn : DataGridTextColumn, IFilterColumn
             filterComboBox.ItemsSource = filters?.Prepend(allFilter);
         }
     }
+
+    public static readonly DependencyProperty FilterEnumProperty =
+        DependencyProperty.Register("FilterEnum", typeof(Type), typeof(DataGridAutoFilterTextColumn),
+        new PropertyMetadata(null, (d, e) => ((DataGridAutoFilterTextColumn)d).OnFilterEnumChanged((Type)e.NewValue)));
+
+    public Type FilterEnum
+    {
+        get => (Type)GetValue(FilterEnumProperty);
+        set => SetValue(FilterEnumProperty, value);
+    }
+
+    private void OnFilterEnumChanged(Type filterEnum)
+    {
+        this.filters = Enum.GetValues(filterEnum).Cast<object>().Select(e => new FilterViewModel(e)).ToList();
+        Update();
+    }
+
+    public static readonly DependencyProperty FilterItemsProperty =
+        DependencyProperty.Register("FilterItems", typeof(IEnumerable<IFilterItem>), typeof(DataGridAutoFilterTextColumn),
+        new PropertyMetadata(null, (d, e) => ((DataGridAutoFilterTextColumn)d).OnFilterItemsChanged((IEnumerable<IFilterItem>?)e.NewValue)));
+
+    public IEnumerable<IFilterItem>? FilterItems
+    {
+        get => (IEnumerable<IFilterItem>?)GetValue(FilterItemsProperty);
+        set => SetValue(FilterItemsProperty, value);
+    }
+
+    private void OnFilterItemsChanged(IEnumerable<IFilterItem>? filterItems)
+    {
+        this.filters = filterItems!.Select(i => new FilterViewModel(i)).ToList();
+        Update();
+    }
+
+    //public static readonly DependencyProperty FilterValueProperty =
+    //    DependencyProperty.Register("FilterValue", typeof(int), typeof(DataGridFilterTextColumn),
+    //    new FrameworkPropertyMetadata(0x7fffffff, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+    //public int FilterValue
+    //{
+    //    get => (int)GetValue(FilterValueProperty);
+    //    set => SetValue(FilterValueProperty, value);
+    //}
+
 
     [DebuggerDisplay("FilterViewModel {Name}")]
     public partial class FilterViewModel : INotifyPropertyChanged
@@ -152,10 +209,10 @@ public class DataGridAutoFilterEnumColumn : DataGridTextColumn, IFilterColumn
 
         public bool IsAll { get; } = false;
         public int Value { get; }
-
+                
         public string? Name { get; }
 
-
+        
         private bool? isChecked;
 
         public bool? IsChecked

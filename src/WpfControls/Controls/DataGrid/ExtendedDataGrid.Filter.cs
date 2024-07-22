@@ -1,9 +1,4 @@
-﻿
-
-using System.Data.Common;
-using System.Windows.Data;
-
-namespace WpfControls.Controls;
+﻿namespace WpfControls.Controls;
 
 public partial class ExtendedDataGrid : DataGrid
 {
@@ -34,96 +29,101 @@ public partial class ExtendedDataGrid : DataGrid
     {
         base.OnItemsSourceChanged(oldValue, newValue);
 
-
-        //if (newValue is ICollectionView collection)
+        foreach (IFilterColumn column in this.Columns.Where(c => c is IFilterColumn))
         {
-            object? obj = newValue.Cast<object>().FirstOrDefault();
-            if (obj != null)
-            {
-                foreach (IFilterColumn column in this.Columns.Where(c => c is IFilterColumn))
-                {
-                    Type? type = GetBindingType(column.Binding, obj);
+            column.ItemsSourceChanged(oldValue, newValue);
+        }
 
-                    if (type!.IsEnum)
-                    {
-                        column.SetFilterEnumType(type!);
-                    }
-                    else
-                    {
-                        
-                    }
-                    string? val = GetBindingText(column.Binding, obj);
+        if (newValue is ICollectionView collectionView)
+        {
+            collectionView.Filter = DoFilter;
+            collectionView.Refresh();
+        }        
+    }
 
-                    SetBindingHandler(column.Binding, obj, OnValueChanged);
-                                        
-                }
-            }
+    private bool DoFilter(object obj)
+    {
+        bool res = true;
+        foreach (IFilterColumn column in this.Columns.Where(c => c is IFilterColumn))
+        {
+            res &= column.Filter(obj);
+        }
+        return res;
+
+    }
+
+    public void UpdateFilter()
+    {
+        if (this.ItemsSource is ICollectionView collectionView)
+        {
+            collectionView.Refresh();
         }
     }
 
    
 
-    private void OnValueChanged(object? sender, EventArgs e)
-    {
-        // Do some stuff here..
-    }
+    //private void OnValueChanged(object? sender, EventArgs e)
+    //{
+    //    // Do some stuff here..
+    //}
 
-    //private ICollectionView collectionView;
+    ////private ICollectionView collectionView;
 
-    private void Update()
-    {
-        bool hasFilters = this.Columns.Where(c => c is IFilterColumn).Any();
-        if (AutoFilter && hasFilters)
-        {
-            if (ItemsSource is ICollectionView collection)
-            {
-                //collectionView = collection;
-                collection.Filter = DoFilter;
-                collection.Refresh();
-            }
+    //private void Update()
+    //{
+    //    bool hasFilters = this.Columns.Where(c => c is IFilterColumn).Any();
+    //    if (AutoFilter && hasFilters)
+    //    {
+    //        if (ItemsSource is ICollectionView collection)
+    //        {
+    //            //collectionView = collection;
+    //            collection.Filter = DoFilter;
+    //            collection.Refresh();
+    //        }
 
-        }
+    //    }
 
-    }
+    //}
 
-    private bool DoFilter(object obj)
-    {
-        //foreach (this.Columns.Where(c => c is IFilterColumn))
-        //ItemViewModel item = (ItemViewModel)obj;
-        //return (((int)item.FilterEnum) & FilterEnumValue) != 0 && (((int)item.FilterListValue) & FilterListValue) != 0;
-        return true;
+    //private bool DoFilter(object obj)
+    //{
+    //    //foreach (this.Columns.Where(c => c is IFilterColumn))
+    //    //ItemViewModel item = (ItemViewModel)obj;
+    //    //return (((int)item.FilterEnum) & FilterEnumValue) != 0 && (((int)item.FilterListValue) & FilterListValue) != 0;
+    //    return true;
 
-    }
+    //}
 
 
-    #region Binding Helper
-    private static Type? GetBindingType(BindingBase binding, object obj)
-    {
-        string propertyName = ((Binding)binding).Path.Path;
-        PropertyDescriptor? property = TypeDescriptor.GetProperties(obj).Find(propertyName, false);
-        return property?.PropertyType;
-    }
+    //#region Binding Helper
+    //private static Type? GetBindingType(BindingBase binding, object obj)
+    //{
+    //    string propertyName = ((Binding)binding).Path.Path;
+    //    PropertyDescriptor? property = TypeDescriptor.GetProperties(obj).Find(propertyName, false);
+    //    return property?.PropertyType;
+    //}
 
-    private static object? GetBindingValue(BindingBase binding, object obj)
-    {
-        string propertyName = ((Binding)binding).Path.Path;
-        PropertyDescriptor? property = TypeDescriptor.GetProperties(obj).Find(propertyName, false);
-        return property?.GetValue(obj);
-    }
+    //private static object? GetBindingValue(BindingBase binding, object obj)
+    //{
+    //    string propertyName = ((Binding)binding).Path.Path;
+    //    PropertyDescriptor? property = TypeDescriptor.GetProperties(obj).Find(propertyName, false);
+    //    return property?.GetValue(obj);
+    //}
 
-    private static string? GetBindingText(BindingBase binding, object obj)
-    {
-        string propertyName = ((Binding)binding).Path.Path;
-        PropertyDescriptor? property = TypeDescriptor.GetProperties(obj).Find(propertyName, false);
-        return property?.GetValue(obj)?.ToString();
-    }
+    //private static string? GetBindingText(BindingBase binding, object obj)
+    //{
+    //    string propertyName = ((Binding)binding).Path.Path;
+    //    PropertyDescriptor? property = TypeDescriptor.GetProperties(obj).Find(propertyName, false);
+    //    return property?.GetValue(obj)?.ToString();
+    //}
 
-    private void SetBindingHandler(BindingBase binding, object obj, EventHandler handler)
-    {
-        string propertyName = ((Binding)binding).Path.Path;
-        PropertyDescriptor? property = TypeDescriptor.GetProperties(obj).Find(propertyName, false);
-        property?.AddValueChanged(obj, handler);
-    }
+    //private void SetBindingHandler(BindingBase binding, object obj, EventHandler handler)
+    //{
+    //    string propertyName = ((Binding)binding).Path.Path;
+    //    PropertyDescriptor? property = TypeDescriptor.GetProperties(obj).Find(propertyName, false);
+    //    property?.AddValueChanged(obj, handler);
+    //}
 
-    #endregion
+    //#endregion
+
 }

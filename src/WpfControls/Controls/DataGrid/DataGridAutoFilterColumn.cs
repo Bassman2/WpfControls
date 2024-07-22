@@ -1,8 +1,12 @@
 ﻿namespace WpfControls.Controls;
 
-public class DataGridAutoFilterTextColumn : DataGridTextColumn, IFilterColumn
+public abstract class DataGridAutoFilterColumn : DataGridTextColumn, IFilterColumn
 {
-    public DataGridAutoFilterTextColumn()
+    private ComboBox? filterComboBox;
+    protected List<FilterViewModel>? filters;
+    private readonly FilterViewModel allFilter = new();
+
+    public DataGridAutoFilterColumn()
     {
         IsReadOnly = true;
         var headerTemplate = new DataTemplate() { DataType = typeof(string) };
@@ -29,12 +33,6 @@ public class DataGridAutoFilterTextColumn : DataGridTextColumn, IFilterColumn
         HeaderTemplate = headerTemplate;
     }
 
-    public int FilterBitmask { get; set; }
-    private ComboBox? filterComboBox;
-    private List<FilterViewModel>? filters;
-    private readonly FilterViewModel allFilter = new();
-
-
     public void OnLoaded(object sender, RoutedEventArgs e)
     {
         filterComboBox = (ComboBox)sender;
@@ -49,21 +47,12 @@ public class DataGridAutoFilterTextColumn : DataGridTextColumn, IFilterColumn
         dataTemplate.VisualTree = checkBox;
         filterComboBox.ItemTemplate = dataTemplate;
 
-        Update();
+        //Update();
 
-        DataGrid dg = DataGridOwner;
+        //DataGrid dg = DataGridOwner;
     }
 
-    protected override void OnBindingChanged(BindingBase oldBinding, BindingBase newBinding)
-    {
-        if (newBinding != null && newBinding is Binding binding)
-        {
-            binding.Converter = new DescriptionConverter();
-        }
-        base.OnBindingChanged(oldBinding, newBinding);
-    }
-
-    public void OnChecked(object sender, RoutedEventArgs e)
+    public virtual void OnChecked(object sender, RoutedEventArgs e)
     {
         FilterViewModel fvm = (FilterViewModel)((CheckBox)sender).DataContext;
 
@@ -73,14 +62,14 @@ public class DataGridAutoFilterTextColumn : DataGridTextColumn, IFilterColumn
         {
             switch (fvm.IsChecked)
             {
-                case true:
-                    filters?.Where(f => f.IsChecked == false).ToList().ForEach(f => f.IsChecked = true);
-                    break;
-                case false:
-                    filters?.Where(f => f.IsChecked == true).ToList().ForEach(f => f.IsChecked = false);
-                    break;
-                case null:
-                    break;
+            case true:
+                filters?.Where(f => f.IsChecked == false).ToList().ForEach(f => f.IsChecked = true);
+                break;
+            case false:
+                filters?.Where(f => f.IsChecked == true).ToList().ForEach(f => f.IsChecked = false);
+                break;
+            case null:
+                break;
             }
         }
         else
@@ -99,19 +88,9 @@ public class DataGridAutoFilterTextColumn : DataGridTextColumn, IFilterColumn
                 this.allFilter!.IsChecked = null;
             }
         }
-        // set filter value to trigger new filtering
-        int filterValue = filters?.Where(f => f.IsChecked == true).Select(f => f.Value).Aggregate((int)0, (a, b) => (int)(a | b)) ?? 0;
-        if (filterValue != this.FilterBitmask)
-        {
-            Debug.WriteLine($"FilterValue {filterValue}");
-            this.FilterBitmask = filterValue;
-        }
     }
 
-    public void SetFilterEnumType(Type enumType)
-    { }
-
-    private void Update()
+    protected void Update()
     {
         if (filterComboBox != null && filters != null)
         {
@@ -119,51 +98,50 @@ public class DataGridAutoFilterTextColumn : DataGridTextColumn, IFilterColumn
         }
     }
 
-    public static readonly DependencyProperty FilterEnumProperty =
-        DependencyProperty.Register("FilterEnum", typeof(Type), typeof(DataGridAutoFilterTextColumn),
-        new PropertyMetadata(null, (d, e) => ((DataGridAutoFilterTextColumn)d).OnFilterEnumChanged((Type)e.NewValue)));
+    #region IFilterColumn
 
-    public Type FilterEnum
+    public abstract void ItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue);
+
+    public abstract bool Filter(object obj);
+
+    #endregion
+
+    #region Binding Helper
+
+    protected static Type? GetBindingType(BindingBase binding, object obj)
     {
-        get => (Type)GetValue(FilterEnumProperty);
-        set => SetValue(FilterEnumProperty, value);
+        string propertyName = ((Binding)binding).Path.Path;
+        PropertyDescriptor? property = TypeDescriptor.GetProperties(obj).Find(propertyName, false);
+        return property?.PropertyType;
     }
 
-    private void OnFilterEnumChanged(Type filterEnum)
+    protected static object? GetBindingValue(BindingBase binding, object obj)
     {
-        this.filters = Enum.GetValues(filterEnum).Cast<object>().Select(e => new FilterViewModel(e)).ToList();
-        Update();
+        string propertyName = ((Binding)binding).Path.Path;
+        PropertyDescriptor? property = TypeDescriptor.GetProperties(obj).Find(propertyName, false);
+        return property?.GetValue(obj);
     }
 
-    public static readonly DependencyProperty FilterItemsProperty =
-        DependencyProperty.Register("FilterItems", typeof(IEnumerable<IFilterItem>), typeof(DataGridAutoFilterTextColumn),
-        new PropertyMetadata(null, (d, e) => ((DataGridAutoFilterTextColumn)d).OnFilterItemsChanged((IEnumerable<IFilterItem>?)e.NewValue)));
-
-    public IEnumerable<IFilterItem>? FilterItems
+    protected static string? GetBindingText(BindingBase binding, object obj)
     {
-        get => (IEnumerable<IFilterItem>?)GetValue(FilterItemsProperty);
-        set => SetValue(FilterItemsProperty, value);
+        string propertyName = ((Binding)binding).Path.Path;
+        PropertyDescriptor? property = TypeDescriptor.GetProperties(obj).Find(propertyName, false);
+        return property?.GetValue(obj)?.ToString();
     }
 
-    private void OnFilterItemsChanged(IEnumerable<IFilterItem>? filterItems)
+    protected void SetBindingHandler(BindingBase binding, object obj, EventHandler handler)
     {
-        this.filters = filterItems!.Select(i => new FilterViewModel(i)).ToList();
-        Update();
+        string propertyName = ((Binding)binding).Path.Path;
+        PropertyDescriptor? property = TypeDescriptor.GetProperties(obj).Find(propertyName, false);
+        property?.AddValueChanged(obj, handler);
     }
 
-    //public static readonly DependencyProperty FilterValueProperty =
-    //    DependencyProperty.Register("FilterValue", typeof(int), typeof(DataGridFilterTextColumn),
-    //    new FrameworkPropertyMetadata(0x7fffffff, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+    #endregion
 
-    //public int FilterValue
-    //{
-    //    get => (int)GetValue(FilterValueProperty);
-    //    set => SetValue(FilterValueProperty, value);
-    //}
-
+    #region FilterViewModel
 
     [DebuggerDisplay("FilterViewModel {Name}")]
-    public partial class FilterViewModel : INotifyPropertyChanged
+    public class FilterViewModel : INotifyPropertyChanged
     {
         /// <summary>
         /// Constructor for 'All' filter item
@@ -200,11 +178,11 @@ public class DataGridAutoFilterTextColumn : DataGridTextColumn, IFilterColumn
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public bool IsAll { get; } = false;
-        public int Value { get; }
-                
+        public object? Value { get; }
+
         public string? Name { get; }
 
-        
+
         private bool? isChecked;
 
         public bool? IsChecked
@@ -220,4 +198,6 @@ public class DataGridAutoFilterTextColumn : DataGridTextColumn, IFilterColumn
             }
         }
     }
+
+    #endregion
 }

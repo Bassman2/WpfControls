@@ -2,10 +2,14 @@
 
 public interface IFilterColumn
 {
-    int FilterBitmask { get; }
+    void ItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue);
 
-    BindingBase Binding { get; }
+    bool Filter(object obj);
+
+    //int FilterBitmask { get; }
+
+    //BindingBase Binding { get; }
 
 
-    void SetFilterEnumType(Type enumType);
+    //void SetFilterEnumType(Type enumType);
 }

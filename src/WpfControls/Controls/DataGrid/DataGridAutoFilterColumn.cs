@@ -4,6 +4,7 @@ public abstract class DataGridAutoFilterColumn : DataGridTextColumn, IFilterColu
 {
     private ComboBox? filterComboBox;
     protected List<FilterViewModel>? filters;
+    protected List<FilterViewModel>? checkedFilters;
     private readonly FilterViewModel allFilter = new();
 
     public DataGridAutoFilterColumn()
@@ -47,9 +48,7 @@ public abstract class DataGridAutoFilterColumn : DataGridTextColumn, IFilterColu
         dataTemplate.VisualTree = checkBox;
         filterComboBox.ItemTemplate = dataTemplate;
 
-        //Update();
-
-        //DataGrid dg = DataGridOwner;
+        
     }
 
     public virtual void OnChecked(object sender, RoutedEventArgs e)
@@ -87,6 +86,11 @@ public abstract class DataGridAutoFilterColumn : DataGridTextColumn, IFilterColu
             {
                 this.allFilter!.IsChecked = null;
             }
+        }
+
+        if (this.DataGridOwner is ExtendedDataGrid dataGrid)
+        {
+            dataGrid.RefreshFilter();
         }
     }
 
@@ -129,7 +133,7 @@ public abstract class DataGridAutoFilterColumn : DataGridTextColumn, IFilterColu
         return property?.GetValue(obj)?.ToString();
     }
 
-    protected void SetBindingHandler(BindingBase binding, object obj, EventHandler handler)
+    protected static void SetBindingHandler(BindingBase binding, object obj, EventHandler handler)
     {
         string propertyName = ((Binding)binding).Path.Path;
         PropertyDescriptor? property = TypeDescriptor.GetProperties(obj).Find(propertyName, false);

@@ -1,9 +1,9 @@
-﻿namespace WpfControls.Controls;
+﻿using System.Windows.Media.Converters;
+
+namespace WpfControls.Controls;
 
 public class DataGridAutoFilterEnumColumn : DataGridAutoFilterColumn
 {
-    
-
     #region IFilterColumn
 
     public override void ItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue)
@@ -18,6 +18,7 @@ public class DataGridAutoFilterEnumColumn : DataGridAutoFilterColumn
             }
                 
             this.filters = Enum.GetValues(type).Cast<object>().Select(e => new FilterViewModel(e)).ToList();
+            this.checkedFilters = filters?.Where(f => f.IsChecked == true).ToList();
             Update();
             
             //string? val = GetBindingText(column.Binding, obj);
@@ -29,7 +30,9 @@ public class DataGridAutoFilterEnumColumn : DataGridAutoFilterColumn
     public override bool Filter(object obj)
     {
         object? o = GetBindingValue(this.Binding, obj);
-        //switch (filterType)
+        bool res = this.checkedFilters?.Any(f => f.Value == o) ?? false;
+        //BoolIListConverter res =  o == 
+        ////switch (filterType)
         //{
         //case FilterType.Enum:
         //    return o! 
@@ -41,7 +44,7 @@ public class DataGridAutoFilterEnumColumn : DataGridAutoFilterColumn
         //default:
         //    throw new Exception();
         //}
-        return true;
+        return res;
     }
 
     #endregion
@@ -49,6 +52,9 @@ public class DataGridAutoFilterEnumColumn : DataGridAutoFilterColumn
     public override void OnChecked(object sender, RoutedEventArgs e)
     {
         base.OnChecked(sender, e);
+
+        checkedFilters = filters?.Where(f => f.IsChecked == true).ToList();
+
         //FilterViewModel fvm = (FilterViewModel)((CheckBox)sender).DataContext;
 
         //Debug.WriteLine($"OnChecked {fvm.Name}");
@@ -94,7 +100,7 @@ public class DataGridAutoFilterEnumColumn : DataGridAutoFilterColumn
 
         //    if (this.DataGridOwner is ExtendedDataGrid dataGrid)
         //    {
-        //        dataGrid.UpdateFilter();
+        //        dataGrid.RefreshFilter();
         //    }
 
         //}

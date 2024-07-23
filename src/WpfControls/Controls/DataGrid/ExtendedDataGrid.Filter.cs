@@ -29,22 +29,27 @@ public partial class ExtendedDataGrid : DataGrid
     {
         base.OnItemsSourceChanged(oldValue, newValue);
 
-        foreach (IFilterColumn column in this.Columns.Where(c => c is IFilterColumn))
-        {
-            column.ItemsSourceChanged(oldValue, newValue);
-        }
-
         if (newValue is ICollectionView collectionView)
         {
+            // Fill columns
+            foreach (IFilterColumn column in this.Columns.Where(c => c is IFilterColumn).Cast<IFilterColumn>())
+            {
+                column.ItemsSourceChanged(oldValue, newValue);
+            }
+
+            // activate filtering
             collectionView.Filter = DoFilter;
-            collectionView.Refresh();
-        }        
+        }
+        else
+        {
+            throw new Exception("ItemsSource must be inherit from ICollectionView to use filtering");
+        }
     }
 
     private bool DoFilter(object obj)
     {
         bool res = true;
-        foreach (IFilterColumn column in this.Columns.Where(c => c is IFilterColumn))
+        foreach (IFilterColumn column in this.Columns.Where(c => c is IFilterColumn).Cast<IFilterColumn>())
         {
             res &= column.Filter(obj);
         }
@@ -52,7 +57,7 @@ public partial class ExtendedDataGrid : DataGrid
 
     }
 
-    public void UpdateFilter()
+    public void RefreshFilter()
     {
         if (this.ItemsSource is ICollectionView collectionView)
         {

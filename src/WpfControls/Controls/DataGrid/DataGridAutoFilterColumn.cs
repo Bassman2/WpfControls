@@ -48,7 +48,7 @@ public abstract class DataGridAutoFilterColumn : DataGridTextColumn, IFilterColu
         dataTemplate.VisualTree = checkBox;
         filterComboBox.ItemTemplate = dataTemplate;
 
-        
+        Update();
     }
 
     public virtual void OnChecked(object sender, RoutedEventArgs e)
@@ -165,7 +165,7 @@ public abstract class DataGridAutoFilterColumn : DataGridTextColumn, IFilterColu
             FieldInfo? fieldInfo = item.GetType().GetField(item.ToString()!);
             DescriptionAttribute? attribute = fieldInfo!.GetCustomAttributes(typeof(DescriptionAttribute), false).FirstOrDefault() as DescriptionAttribute;
             this.Name = (attribute == null ? item.ToString() : attribute.Description)!;
-            this.Value = (int)item;
+            this.Value = item;
             this.IsChecked = true;
         }
 

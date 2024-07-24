@@ -30,20 +30,23 @@ public class DataGridAutoFilterEnumColumn : DataGridAutoFilterColumn
     public override bool Filter(object obj)
     {
         object? o = GetBindingValue(this.Binding, obj);
-        bool res = this.checkedFilters?.Any(f => f.Value == o) ?? false;
-        //BoolIListConverter res =  o == 
-        ////switch (filterType)
-        //{
-        //case FilterType.Enum:
-        //    return o! 
-        //    break;
-        //case FilterType.String:
-        //    break;
-        //case FilterType.Filter:
-        //    break;
-        //default:
-        //    throw new Exception();
-        //}
+        string str = o?.ToString() ?? "";
+        int idA = (int)o!;
+        //bool res = this.checkedFilters?.Any(f => f.Value == o) ?? false;
+        bool res = false;
+        foreach (var checkedFilter in this.checkedFilters!)
+        {
+            if (idA == (int)checkedFilter.Value!)
+            {
+                res = true;
+            }
+
+            //string xxx = checkedFilter.Value?.ToString() ?? "";
+            //if (str == xxx)
+            //{
+            //    res = true;
+            //}
+        }
         return res;
     }
 

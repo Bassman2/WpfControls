@@ -13,7 +13,6 @@
         <TabControl>
             <TabItem Header="Auto Filter">
                 <ctl:ExtendedDataGrid
-                    AutoFilter="True"
                     ItemsSource="{Binding AutoFilterItems}"
                     CanUserSortRows="True"
                     AutoGenerateColumns="False"                    

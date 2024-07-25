@@ -88,6 +88,8 @@ public abstract class DataGridAutoFilterColumn : DataGridTextColumn, IFilterColu
             }
         }
 
+        checkedFilters = filters?.Where(f => f.IsChecked == true).ToList();
+
         if (this.DataGridOwner is ExtendedDataGrid dataGrid)
         {
             dataGrid.RefreshFilter();
@@ -100,6 +102,12 @@ public abstract class DataGridAutoFilterColumn : DataGridTextColumn, IFilterColu
         {
             filterComboBox.ItemsSource = filters?.Prepend(allFilter);
         }
+    }
+
+    protected Type BindingType(IEnumerable newValue)
+    {
+        object obj = newValue.Cast<object>().First();
+        return GetBindingType(this.Binding, obj)!;
     }
 
     #region IFilterColumn
@@ -165,6 +173,16 @@ public abstract class DataGridAutoFilterColumn : DataGridTextColumn, IFilterColu
             FieldInfo? fieldInfo = item.GetType().GetField(item.ToString()!);
             DescriptionAttribute? attribute = fieldInfo!.GetCustomAttributes(typeof(DescriptionAttribute), false).FirstOrDefault() as DescriptionAttribute;
             this.Name = (attribute == null ? item.ToString() : attribute.Description)!;
+            this.Value = item;
+            this.IsChecked = true;
+        }
+
+        /// <summary>
+        /// Constructor for text filter item
+        /// </summary>
+        public FilterViewModel(string item)
+        {
+            this.Name = item;
             this.Value = item;
             this.IsChecked = true;
         }

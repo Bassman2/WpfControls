@@ -22,6 +22,7 @@
                         <DataGridTextColumn Header="Description" Binding="{Binding Description}"/>
                         <ctl:DataGridAutoFilterEnumColumn Header="Enum A" Binding="{Binding Enum1}"/>
                         <ctl:DataGridAutoFilterEnumColumn Header="Enum B" Binding="{Binding Enum2}"/>
+                        <ctl:DataGridAutoFilterTextColumn Header="Group" Binding="{Binding Group}"/>
                     </DataGrid.Columns>
                 </ctl:ExtendedDataGrid>
 

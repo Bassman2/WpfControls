@@ -10,7 +10,7 @@ public enum Enum2
     Transparent, Red, Green, Blue, White, Black
 }
 
-public partial class AutoFilterItemViewModel(string name, string description, Enum1 enum1, Enum2 enum2) : ObservableObject
+public partial class AutoFilterItemViewModel(string name, string description, Enum1 enum1, Enum2 enum2, string group) : ObservableObject
 {
     [ObservableProperty]
     private string name = name;
@@ -23,4 +23,7 @@ public partial class AutoFilterItemViewModel(string name, string description, En
 
     [ObservableProperty]
     private Enum2 enum2 = enum2;
+
+    [ObservableProperty]
+    private string group = group;
 }

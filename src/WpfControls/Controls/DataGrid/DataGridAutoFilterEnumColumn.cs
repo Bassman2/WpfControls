@@ -27,7 +27,7 @@ public class DataGridAutoFilterEnumColumn : DataGridAutoFilterColumn
     public override bool Filter(object obj)
     {
         object? o = GetBindingValue(this.Binding, obj);
-        string str = o?.ToString() ?? "";
+        //string str = o?.ToString() ?? "";
         int idA = (int)o!;
         //bool res = this.checkedFilters?.Any(f => f.Value == o) ?? false;
         bool res = false;

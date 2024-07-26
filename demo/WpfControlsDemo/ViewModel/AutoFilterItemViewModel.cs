@@ -1,4 +1,6 @@
-﻿namespace WpfControlsDemo.ViewModel;
+﻿using System.ComponentModel;
+
+namespace WpfControlsDemo.ViewModel;
 
 public enum Enum1
 {
@@ -7,7 +9,18 @@ public enum Enum1
 
 public enum Enum2
 {
-    Transparent, Red, Green, Blue, White, Black
+    [Description("--Transparent--")]
+    Transparent,
+    [Description("--Red--")]
+    Red,
+    [Description("--Green--")]
+    Green,
+    [Description("--Blue--")]
+    Blue,
+    [Description("--White--")]
+    White,
+    [Description("--Black--")]
+    Black
 }
 
 public partial class AutoFilterItemViewModel(string name, string description, Enum1 enum1, Enum2 enum2, string group) : ObservableObject

@@ -18,6 +18,7 @@ public abstract class DataGridAutoFilterColumn : DataGridTextColumn, IFilterColu
         var textBlock = new FrameworkElementFactory(typeof(TextBlock));
         textBlock.SetBinding(TextBlock.TextProperty, new Binding("Header") { Source = this });
         textBlock.SetValue(TextBlock.VerticalAlignmentProperty, VerticalAlignment.Center);
+        textBlock.SetValue(FrameworkElement.MarginProperty, new Thickness(0, 0, 4.0, 0.0));
 
         var comboBox = new FrameworkElementFactory(typeof(ComboBox));
         comboBox.SetValue(DockPanel.HorizontalAlignmentProperty, HorizontalAlignment.Right);

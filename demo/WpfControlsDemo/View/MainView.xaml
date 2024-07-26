@@ -5,23 +5,28 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfControlsDemo.View"
         xmlns:ctl="clr-namespace:WpfControls.Controls;assembly=WpfControls"
+        xmlns:conv="clr-namespace:WpfControls.Converter;assembly=WpfControls"
         xmlns:vm="clr-namespace:WpfControlsDemo.ViewModel"
         d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+    <Window.Resources>
+        <conv:DescriptionConverter x:Key="descriptionConverter"/>
+    </Window.Resources>
     <Grid>
         <TabControl>
             <TabItem Header="Auto Filter">
                 <ctl:ExtendedDataGrid
                     ItemsSource="{Binding AutoFilterItems}"
                     CanUserSortRows="True"
+                    CanUserSortColumns="True"
                     AutoGenerateColumns="False"                    
                     Margin="8">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
                         <DataGridTextColumn Header="Description" Binding="{Binding Description}"/>
-                        <ctl:DataGridAutoFilterEnumColumn Header="Enum A" Binding="{Binding Enum1}"/>
-                        <ctl:DataGridAutoFilterEnumColumn Header="Enum B" Binding="{Binding Enum2}"/>
+                        <ctl:DataGridAutoFilterEnumColumn Header="Enum A" Binding="{Binding Enum1}" />
+                        <ctl:DataGridAutoFilterEnumColumn Header="Enum B" Binding="{Binding Enum2, Converter={StaticResource descriptionConverter}}"/>
                         <ctl:DataGridAutoFilterTextColumn Header="Group" Binding="{Binding Group}"/>
                     </DataGrid.Columns>
                 </ctl:ExtendedDataGrid>

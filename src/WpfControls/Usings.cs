@@ -21,3 +21,4 @@ global using CommunityToolkit.Mvvm.Input;
 global using Microsoft.Xaml.Behaviors;
 
 global using WpfControls.Controls.Primitives;
+global using WpfControls.Converter;

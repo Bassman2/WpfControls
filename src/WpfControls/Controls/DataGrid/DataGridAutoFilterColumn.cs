@@ -1,8 +1,13 @@
 ﻿namespace WpfControls.Controls;
 
-public partial class DataGridFilterTextColumn : DataGridTextColumn
+public abstract class DataGridAutoFilterColumn : DataGridTextColumn, IFilterColumn
 {
-    public DataGridFilterTextColumn()
+    private ComboBox? filterComboBox;
+    protected List<FilterViewModel>? filters;
+    protected List<FilterViewModel>? checkedFilters;
+    private readonly FilterViewModel allFilter = new();
+
+    public DataGridAutoFilterColumn()
     {
         IsReadOnly = true;
         var headerTemplate = new DataTemplate() { DataType = typeof(string) };
@@ -13,6 +18,7 @@ public partial class DataGridFilterTextColumn : DataGridTextColumn
         var textBlock = new FrameworkElementFactory(typeof(TextBlock));
         textBlock.SetBinding(TextBlock.TextProperty, new Binding("Header") { Source = this });
         textBlock.SetValue(TextBlock.VerticalAlignmentProperty, VerticalAlignment.Center);
+        textBlock.SetValue(FrameworkElement.MarginProperty, new Thickness(0, 0, 4.0, 0.0));
 
         var comboBox = new FrameworkElementFactory(typeof(ComboBox));
         comboBox.SetValue(DockPanel.HorizontalAlignmentProperty, HorizontalAlignment.Right);
@@ -29,11 +35,6 @@ public partial class DataGridFilterTextColumn : DataGridTextColumn
         HeaderTemplate = headerTemplate;
     }
 
-    private ComboBox? filterComboBox;
-    private List<FilterViewModel>? filters;
-    private readonly FilterViewModel allFilter = new();
-
-
     public void OnLoaded(object sender, RoutedEventArgs e)
     {
         filterComboBox = (ComboBox)sender;
@@ -49,20 +50,9 @@ public partial class DataGridFilterTextColumn : DataGridTextColumn
         filterComboBox.ItemTemplate = dataTemplate;
 
         Update();
-
-        DataGrid dg = DataGridOwner;
     }
 
-    protected override void OnBindingChanged(BindingBase oldBinding, BindingBase newBinding)
-    {
-        if (newBinding != null && newBinding is Binding binding)
-        {
-            binding.Converter = new DescriptionConverter();
-        }
-        base.OnBindingChanged(oldBinding, newBinding);
-    }
-    
-    public void OnChecked(object sender, RoutedEventArgs e)
+    public virtual void OnChecked(object sender, RoutedEventArgs e)
     {
         FilterViewModel fvm = (FilterViewModel)((CheckBox)sender).DataContext;
 
@@ -98,16 +88,16 @@ public partial class DataGridFilterTextColumn : DataGridTextColumn
                 this.allFilter!.IsChecked = null;
             }
         }
-        // set filter value to trigger new filtering
-        int filterValue = filters?.Where(f => f.IsChecked == true).Select(f => f.Value).Aggregate((int)0, (a, b) => (int)(a | b)) ?? 0;
-        if (filterValue != this.FilterValue)
+
+        checkedFilters = filters?.Where(f => f.IsChecked == true).ToList();
+
+        if (this.DataGridOwner is ExtendedDataGrid dataGrid)
         {
-            Debug.WriteLine($"FilterValue {filterValue}");
-            this.FilterValue = filterValue;
+            dataGrid.RefreshFilter();
         }
     }
 
-    private void Update()
+    protected void Update()
     {
         if (filterComboBox != null && filters != null)
         {
@@ -115,51 +105,56 @@ public partial class DataGridFilterTextColumn : DataGridTextColumn
         }
     }
 
-    public static readonly DependencyProperty FilterEnumProperty =
-        DependencyProperty.Register("FilterEnum", typeof(Type), typeof(DataGridFilterTextColumn),
-        new PropertyMetadata(null, (d, e) => ((DataGridFilterTextColumn)d).OnFilterEnumChanged((Type)e.NewValue)));
-
-    public Type FilterEnum
+    protected Type BindingType(IEnumerable newValue)
     {
-        get => (Type)GetValue(FilterEnumProperty);
-        set => SetValue(FilterEnumProperty, value);
+        object obj = newValue.Cast<object>().First();
+        return GetBindingType(this.Binding, obj)!;
     }
 
-    private void OnFilterEnumChanged(Type filterEnum)
+    #region IFilterColumn
+
+    public abstract void ItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue);
+
+    public abstract bool Filter(object obj);
+
+    #endregion
+
+    #region Binding Helper
+
+    protected static Type? GetBindingType(BindingBase binding, object obj)
     {
-        this.filters = Enum.GetValues(filterEnum).Cast<object>().Select(e => new FilterViewModel(e)).ToList();
-        Update();
+        string propertyName = ((Binding)binding).Path.Path;
+        PropertyDescriptor? property = TypeDescriptor.GetProperties(obj).Find(propertyName, false);
+        return property?.PropertyType;
     }
 
-    public static readonly DependencyProperty FilterItemsProperty =
-        DependencyProperty.Register("FilterItems", typeof(IEnumerable<IFilterItem>), typeof(DataGridFilterTextColumn),
-        new PropertyMetadata(null, (d, e) => ((DataGridFilterTextColumn)d).OnFilterItemsChanged((IEnumerable<IFilterItem>?)e.NewValue)));
-
-    public IEnumerable<IFilterItem>? FilterItems
+    protected static object? GetBindingValue(BindingBase binding, object obj)
     {
-        get => (IEnumerable<IFilterItem>?)GetValue(FilterItemsProperty);
-        set => SetValue(FilterItemsProperty, value);
+        string propertyName = ((Binding)binding).Path.Path;
+        PropertyDescriptor? property = TypeDescriptor.GetProperties(obj).Find(propertyName, false);
+        return property?.GetValue(obj);
     }
 
-    private void OnFilterItemsChanged(IEnumerable<IFilterItem>? filterItems)
+    protected static string? GetBindingText(BindingBase binding, object obj)
     {
-        this.filters = filterItems!.Select(i => new FilterViewModel(i)).ToList();
-        Update();
+        string propertyName = ((Binding)binding).Path.Path;
+        PropertyDescriptor? property = TypeDescriptor.GetProperties(obj).Find(propertyName, false);
+        return property?.GetValue(obj)?.ToString();
     }
 
-    public static readonly DependencyProperty FilterValueProperty =
-        DependencyProperty.Register("FilterValue", typeof(int), typeof(DataGridFilterTextColumn),
-        new FrameworkPropertyMetadata(0x7fffffff, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
-       
-    public int FilterValue
+    protected static void SetBindingHandler(BindingBase binding, object obj, EventHandler handler)
     {
-        get => (int)GetValue(FilterValueProperty); 
-        set => SetValue(FilterValueProperty, value); 
+        string propertyName = ((Binding)binding).Path.Path;
+        PropertyDescriptor? property = TypeDescriptor.GetProperties(obj).Find(propertyName, false);
+        property?.AddValueChanged(obj, handler);
     }
-   
+
+    #endregion
+
+    #region FilterViewModel
 
     [DebuggerDisplay("FilterViewModel {Name}")]
-    public partial class FilterViewModel : ObservableObject
+    public class FilterViewModel : INotifyPropertyChanged
     {
         /// <summary>
         /// Constructor for 'All' filter item
@@ -179,7 +174,17 @@ public partial class DataGridFilterTextColumn : DataGridTextColumn
             FieldInfo? fieldInfo = item.GetType().GetField(item.ToString()!);
             DescriptionAttribute? attribute = fieldInfo!.GetCustomAttributes(typeof(DescriptionAttribute), false).FirstOrDefault() as DescriptionAttribute;
             this.Name = (attribute == null ? item.ToString() : attribute.Description)!;
-            this.Value = (int)item; 
+            this.Value = item;
+            this.IsChecked = true;
+        }
+
+        /// <summary>
+        /// Constructor for text filter item
+        /// </summary>
+        public FilterViewModel(string item)
+        {
+            this.Name = item;
+            this.Value = item;
             this.IsChecked = true;
         }
 
@@ -193,13 +198,29 @@ public partial class DataGridFilterTextColumn : DataGridTextColumn
             this.IsChecked = true;
         }
 
+        public event PropertyChangedEventHandler? PropertyChanged;
+
         public bool IsAll { get; } = false;
-        public int Value { get; }
+        public object? Value { get; }
 
-        [ObservableProperty]
-        public string? name;
+        public string? Name { get; }
 
-        [ObservableProperty]
-        public bool? isChecked;
+
+        private bool? isChecked;
+
+        public bool? IsChecked
+        {
+            get => isChecked;
+            set
+            {
+                if (isChecked != value)
+                {
+                    isChecked = value;
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsChecked)));
+                }
+            }
+        }
     }
+
+    #endregion
 }

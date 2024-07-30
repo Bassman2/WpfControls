@@ -27,7 +27,7 @@ public partial class ExtendedDataGrid : DataGrid
 
         // Raise the event, which will bubble up through the element tree.
 
-        CanExecuteDeleteRoutedEventArgs routedEventArgs = new CanExecuteDeleteRoutedEventArgs(CanExecuteDeleteEvent);   
+        CanExecuteDeleteRoutedEventArgs routedEventArgs = new(CanExecuteDeleteEvent);
 
         RaiseEvent(routedEventArgs);
 

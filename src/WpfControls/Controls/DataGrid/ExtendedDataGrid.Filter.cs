@@ -2,9 +2,31 @@
 
 public partial class ExtendedDataGrid : DataGrid
 {
+    public static readonly DependencyProperty CountProperty =
+        DependencyProperty.Register("Count", typeof(int), typeof(ExtendedDataGrid),
+            new FrameworkPropertyMetadata(0, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+    public int Count
+    {
+        get => (int)GetValue(CountProperty);
+        set => SetValue(CountProperty, value);
+    }
+
+    public static readonly DependencyProperty FilteredCountProperty = 
+        DependencyProperty.Register("FilteredCount", typeof(int), typeof(ExtendedDataGrid),
+            new FrameworkPropertyMetadata(0, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+    public int FilteredCount
+    {
+        get => (int)GetValue(FilteredCountProperty);
+        set => SetValue(FilteredCountProperty, value);
+    }
+
     protected override void OnItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue)
     {
         base.OnItemsSourceChanged(oldValue, newValue);
+
+        this.Count = newValue.Cast<object>().Count();
 
         // Fill columns
         foreach (IFilterColumn column in this.Columns.Where(c => c is IFilterColumn).Cast<IFilterColumn>())
@@ -21,6 +43,7 @@ public partial class ExtendedDataGrid : DataGrid
         if (newValue is ICollectionView collectionView)
         {
             collectionView.Filter = DoFilter;
+            FilteredCount = collectionView.Cast<object>().Count();
         }
     }
 
@@ -40,6 +63,7 @@ public partial class ExtendedDataGrid : DataGrid
         if (this.ItemsSource is ICollectionView collectionView)
         {
             collectionView.Refresh();
+            FilteredCount = collectionView.Cast<object>().Count();
         }
     }
 }

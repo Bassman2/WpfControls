@@ -11,8 +11,12 @@ public class EnumComboBox : ComboBox
         if (!DesignerProperties.GetIsInDesignMode(new DependencyObject()))
         {
             Assembly ass = Assembly.GetEntryAssembly()!;
-            string name = ass.ExportedTypes.Single(t => t.Name == "Resources").FullName!;
-            resourceManager = new ResourceManager(name, ass);
+            //var x = ass.ExportedTypes.SingleOrDefault(t => t.Name == "Resources");
+            string? name = ass.ExportedTypes.SingleOrDefault(t => t.Name == "Resources")?.FullName!;
+            if (name is not null)
+            {
+                resourceManager = new ResourceManager(name, ass);
+            }
         }
     }
 
@@ -49,7 +53,7 @@ public class EnumComboBox : ComboBox
         foreach (var item in Enum.GetValues(enumType))
         {
             string resName = $"Enum{enumType.Name}{item}";
-            string? description = resourceManager!.GetString(resName);
+            string? description = resourceManager?.GetString(resName);
             if (description == null) 
             {
                 string name = item.ToString()!;

@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace WpfControlsDemo.ViewModel;
+﻿namespace WpfControlsDemo.ViewModel;
 
 public enum Enum1
 {

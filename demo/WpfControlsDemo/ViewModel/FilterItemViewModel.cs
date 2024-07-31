@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+﻿
 
 namespace WpfControlsDemo.ViewModel;
 
@@ -27,9 +27,9 @@ public class FilterItem : IFilterItem
     public int Value { get; set; }
 }
 
-public partial class ItemViewModel : ObservableObject
+public partial class FilterItemViewModel : ObservableObject
 {
-    public ItemViewModel(string name, string description, Color color, EnumFilter filterEnum, FilterItem filterList)
+    public FilterItemViewModel(string name, string description, Color color, EnumFilter filterEnum, FilterItem filterList)
     { 
         this.Name = name;
         this.Description = description;

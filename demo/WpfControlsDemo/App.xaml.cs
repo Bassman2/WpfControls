@@ -14,6 +14,6 @@ public partial class App : Application
             MessageBox.Show(ex.ToString(), "Unhandled Error !!!");
         };
 
-        new WpfControlsDemo.View.MainView() { DataContext = new WpfControlsDemo.ViewModel.MainViewModel() }.Show();
+        new WpfControlsDemo.View.MainView() /*{ DataContext = new WpfControlsDemo.ViewModel.MainViewModel() }*/.Show();
     }
 }

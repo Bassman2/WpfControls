@@ -201,13 +201,12 @@ public abstract class DataGridAutoFilterColumn : DataGridTextColumn, IFilterColu
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public bool IsAll { get; } = false;
+
         public object? Value { get; }
 
         public string? Name { get; }
 
-
         private bool? isChecked;
-
         public bool? IsChecked
         {
             get => isChecked;

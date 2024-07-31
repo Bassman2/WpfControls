@@ -2,6 +2,10 @@
 
 public partial class DataGridFilterTextColumn : DataGridTextColumn
 {
+    private ComboBox? filterComboBox;
+    private List<FilterViewModel>? filters;
+    private readonly FilterViewModel allFilter = new();
+
     public DataGridFilterTextColumn()
     {
         IsReadOnly = true;
@@ -29,11 +33,6 @@ public partial class DataGridFilterTextColumn : DataGridTextColumn
         HeaderTemplate = headerTemplate;
     }
 
-    private ComboBox? filterComboBox;
-    private List<FilterViewModel>? filters;
-    private readonly FilterViewModel allFilter = new();
-
-
     public void OnLoaded(object sender, RoutedEventArgs e)
     {
         filterComboBox = (ComboBox)sender;
@@ -49,8 +48,6 @@ public partial class DataGridFilterTextColumn : DataGridTextColumn
         filterComboBox.ItemTemplate = dataTemplate;
 
         Update();
-
-        DataGrid dg = DataGridOwner;
     }
 
     protected override void OnBindingChanged(BindingBase oldBinding, BindingBase newBinding)
@@ -159,7 +156,7 @@ public partial class DataGridFilterTextColumn : DataGridTextColumn
    
 
     [DebuggerDisplay("FilterViewModel {Name}")]
-    public partial class FilterViewModel : ObservableObject
+    public class FilterViewModel : INotifyPropertyChanged
     {
         /// <summary>
         /// Constructor for 'All' filter item
@@ -193,13 +190,26 @@ public partial class DataGridFilterTextColumn : DataGridTextColumn
             this.IsChecked = true;
         }
 
+        public event PropertyChangedEventHandler? PropertyChanged;
+
         public bool IsAll { get; } = false;
+
         public int Value { get; }
+                
+        public string? Name { get; }
 
-        [ObservableProperty]
-        public string? name;
-
-        [ObservableProperty]
-        public bool? isChecked;
+        private bool? isChecked;
+        public bool? IsChecked
+        {
+            get => isChecked;
+            set
+            {
+                if (isChecked != value)
+                {
+                    isChecked = value;
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsChecked)));
+                }
+            }
+        }
     }
 }

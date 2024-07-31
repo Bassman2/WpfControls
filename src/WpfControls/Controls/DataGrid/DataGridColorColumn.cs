@@ -1,4 +1,6 @@
-﻿namespace WpfControls.Controls;
+﻿using System.Windows.Media.Animation;
+
+namespace WpfControls.Controls;
 
 // https://github.com/dotnet/wpf/tree/main/src/Microsoft.DotNet.Wpf/src/PresentationFramework/System/Windows/Controls
 
@@ -82,3 +84,5 @@ public class DataGridColorColumn : DataGridBoundColumn
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => throw new NotImplementedException();
     }
 }
+
+

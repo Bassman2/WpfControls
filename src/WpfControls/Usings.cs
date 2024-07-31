@@ -16,8 +16,6 @@ global using System.Windows.Markup;
 global using System.Windows.Media;
 
 // packages
-global using CommunityToolkit.Mvvm.ComponentModel;
-global using CommunityToolkit.Mvvm.Input;
 global using Microsoft.Xaml.Behaviors;
 
 global using WpfControls.Controls.Primitives;

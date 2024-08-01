@@ -1,4 +1,6 @@
-﻿namespace WpfControls.Converter;
+﻿using WpfControls.Internal;
+
+namespace WpfControls.Converter;
 
 [ValueConversion(typeof(object), typeof(string))]
 public class ResourceConverter : IValueConverter

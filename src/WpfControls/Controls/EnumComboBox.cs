@@ -1,6 +1,4 @@
-﻿using static WpfControls.Controls.DataGridColorColumn;
-
-namespace WpfControls.Controls;
+﻿namespace WpfControls.Controls;
 
 public class EnumComboBox : ComboBox
 {

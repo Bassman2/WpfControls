@@ -3,6 +3,7 @@ global using System.Collections.ObjectModel;
 global using System.Collections.Specialized;
 global using System.ComponentModel;
 global using System.Diagnostics;
+global using System.Diagnostics.CodeAnalysis;
 global using System.Globalization;
 global using System.Reflection;
 global using System.Resources;
@@ -15,6 +16,7 @@ global using System.Windows.Input;
 global using System.Windows.Markup;
 global using System.Windows.Media;
 
+
 // packages
 global using Microsoft.Xaml.Behaviors;
 
@@ -22,3 +24,4 @@ global using WpfControls.Attributes;
 global using WpfControls.Controls;
 global using WpfControls.Controls.Primitives;
 global using WpfControls.Converter;
+global using WpfControls.Internal;

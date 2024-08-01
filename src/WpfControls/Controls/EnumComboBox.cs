@@ -1,24 +1,26 @@
-﻿namespace WpfControls.Controls;
+﻿using WpfControls.Internal;
+
+namespace WpfControls.Controls;
 
 public class EnumComboBox : ComboBox
 {
-    //private static readonly ResourceManager resourceManager = Rails.Properties.Resources.ResourceManager;
+    ////private static readonly ResourceManager resourceManager = Rails.Properties.Resources.ResourceManager;
 
-    private static readonly ResourceManager? resourceManager; // = new ResourceManager("Rails.Properties.Resources", Assembly.GetEntryAssembly()!);
+    //private static readonly ResourceManager? resourceManager; // = new ResourceManager("Rails.Properties.Resources", Assembly.GetEntryAssembly()!);
 
-    static EnumComboBox()
-    {
-        if (!DesignerProperties.GetIsInDesignMode(new DependencyObject()))
-        {
-            Assembly ass = Assembly.GetEntryAssembly()!;
-            //var x = ass.ExportedTypes.SingleOrDefault(t => t.Name == "Resources");
-            string? name = ass.ExportedTypes.SingleOrDefault(t => t.Name == "Resources")?.FullName!;
-            if (name is not null)
-            {
-                resourceManager = new ResourceManager(name, ass);
-            }
-        }
-    }
+    //static EnumComboBox()
+    //{
+    //    if (!DesignerProperties.GetIsInDesignMode(new DependencyObject()))
+    //    {
+    //        Assembly ass = Assembly.GetEntryAssembly()!;
+    //        //var x = ass.ExportedTypes.SingleOrDefault(t => t.Name == "Resources");
+    //        string? name = ass.ExportedTypes.SingleOrDefault(t => t.Name == "Resources")?.FullName!;
+    //        if (name is not null)
+    //        {
+    //            resourceManager = new ResourceManager(name, ass);
+    //        }
+    //    }
+    //}
 
     public EnumComboBox()
     {
@@ -39,36 +41,33 @@ public class EnumComboBox : ComboBox
     private void OnEnumTypePropertyChanged(DependencyPropertyChangedEventArgs e)
     {
         Type enumType = (Type)e.NewValue;
-
         if (enumType.IsEnum == false)
         {
             throw new ArgumentException("Type must be an Enum.");
         }
+        this.ItemsSource = Enum.GetValues(enumType).Cast<object>().Select(i => new EnumerationMember(i, GetString(i))).ToList();
+    }
 
-        List<EnumerationMember> list = [];
-
-        foreach (var item in Enum.GetValues(enumType))
+    private static string GetString(object item)
+    {
+        FieldInfo fieldInfo = item.GetType().GetField(item.ToString()!)!;
+        if (fieldInfo.GetCustomAttribute<ResourceAttribute>() is ResourceAttribute resourceAttribute)
         {
-            string resName = $"Enum{enumType.Name}{item}";
-            string? description = resourceManager?.GetString(resName);
-            if (description == null) 
-            {
-                string name = item.ToString()!;
-                var descriptionAttribute = enumType.GetField(name)?.GetCustomAttributes(typeof(DescriptionAttribute), false).FirstOrDefault() as DescriptionAttribute;
-                if (descriptionAttribute != null) 
-                {
-                    description = descriptionAttribute.Description;
-                }
-                else
-                {
-                    description = item.ToString()!;
-                }
-            }
-
-            list.Add(new EnumerationMember(item, description)); 
+            return EntryAssemblyResourceManager.GetString(resourceAttribute.Name) ?? "";
         }
-        this.ItemsSource = list;
+        else if (fieldInfo.GetCustomAttribute<DescriptionAttribute>() is DescriptionAttribute descriptionAttribute)
+        {
+            return descriptionAttribute.Description;
+        }
+        else
+        {
+            return fieldInfo.Name;
+        }
+    }
 
+    protected override void OnSelectionChanged(SelectionChangedEventArgs e)
+    {
+        base.OnSelectionChanged(e);
     }
 
     public class EnumerationMember(object value, string description)

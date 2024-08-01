@@ -19,10 +19,15 @@ internal static class EntryAssemblyResourceManager
 
     public static string? GetString(object item)
     {
-        if (resourceManager is not null && item.GetType().GetField(item.ToString()!)?.GetCustomAttributes<ResourceAttribute>().FirstOrDefault() is ResourceAttribute resourceAttribute)
+        if (resourceManager is not null && item.GetType().GetField(item.ToString()!)?.GetCustomAttribute<ResourceAttribute>() is ResourceAttribute resourceAttribute)
         {
-            return resourceManager.GetString(resourceAttribute.Resource) ?? item.ToString();
+            return resourceManager.GetString(resourceAttribute.Name) ?? item.ToString();
         }
         return item.ToString();
+    }
+
+    public static string? GetString(string name)
+    {
+        return resourceManager?.GetString(name) ?? null;
     }
 }

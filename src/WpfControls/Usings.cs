@@ -18,5 +18,7 @@ global using System.Windows.Media;
 // packages
 global using Microsoft.Xaml.Behaviors;
 
+global using WpfControls.Attributes;
+global using WpfControls.Controls;
 global using WpfControls.Controls.Primitives;
 global using WpfControls.Converter;

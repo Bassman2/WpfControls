@@ -5,6 +5,7 @@
              xmlns:conv="clr-namespace:WpfControls.Converter;assembly=WpfControls"
              Startup="OnApplicationStartup">
     <Application.Resources>
-            <conv:DescriptionConverter x:Key="descriptionConverter"/>
+        <conv:DescriptionConverter x:Key="descriptionConverter"/>
+        <conv:ResourceConverter x:Key="resourceConverter"/>
     </Application.Resources>
 </Application>

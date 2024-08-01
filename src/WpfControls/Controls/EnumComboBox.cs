@@ -1,4 +1,6 @@
-﻿namespace WpfControls.Controls;
+﻿using static WpfControls.Controls.DataGridColorColumn;
+
+namespace WpfControls.Controls;
 
 public class EnumComboBox : ComboBox
 {
@@ -28,17 +30,14 @@ public class EnumComboBox : ComboBox
 
     public static readonly DependencyProperty EnumTypeProperty =
         DependencyProperty.Register("EnumType", typeof(Type), typeof(EnumComboBox),
-            new FrameworkPropertyMetadata(null, new PropertyChangedCallback(OnEnumTypePropertyChanged)));
+            new FrameworkPropertyMetadata(null, new PropertyChangedCallback((o, e) => ((EnumComboBox)o).OnEnumTypePropertyChanged(e))));
 
     public Type EnumType
     {
         get => (Type)GetValue(EnumTypeProperty);
         set => SetValue(EnumTypeProperty, value);
     }
-
-    private static void OnEnumTypePropertyChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) => ((EnumComboBox)o).OnEnumTypePropertyChanged(e);
-
-
+    
     private void OnEnumTypePropertyChanged(DependencyPropertyChangedEventArgs e)
     {
         Type enumType = (Type)e.NewValue;

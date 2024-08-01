@@ -26,8 +26,8 @@
             <TabItem Header="Numeric">
                 <local:NumericView/>
             </TabItem>
-            <TabItem Header="Controls">
-                <local:ControlsView/>
+            <TabItem Header="EnumComboBox Control">
+                <local:EnumComboBoxView/>
             </TabItem>
         </TabControl>
     </Grid>

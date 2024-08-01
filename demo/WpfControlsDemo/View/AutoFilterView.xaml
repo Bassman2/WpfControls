@@ -15,17 +15,20 @@
     <Grid>
         <ctl:ExtendedDataGrid
             ItemsSource="{Binding AutoFilterItems}"
-            CanUserSortRows="True"
+            CanUserSortRows="False"
             CanUserSortColumns="True"
-            AutoGenerateColumns="False"                    
-            Margin="8"> 
-            <DataGrid.Columns>
+            AutoGenerateColumns="False"
+            HeadersVisibility="Column"
+            GridLinesVisibility="None" 
+            IsSynchronizedWithCurrentItem="True"
+            Margin="8">
+            <ctl:ExtendedDataGrid.Columns>
                 <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
                 <DataGridTextColumn Header="Description" Binding="{Binding Description}"/>
                 <ctl:DataGridAutoFilterEnumColumn Header="Enum A" Binding="{Binding Enum1}" />
                 <ctl:DataGridAutoFilterEnumColumn Header="Enum B" Binding="{Binding Enum2, Converter={StaticResource descriptionConverter}}"/>
                 <ctl:DataGridAutoFilterTextColumn Header="Group" Binding="{Binding Group}"/>
-            </DataGrid.Columns>
+            </ctl:ExtendedDataGrid.Columns>
         </ctl:ExtendedDataGrid>
     </Grid>
 </UserControl>

@@ -18,7 +18,7 @@
                 <local:AutoFilterView/>
             </TabItem>
             <TabItem Header="Filter">
-                <local:AutoFilterView/>
+                <local:FilterView/>
             </TabItem>
             <TabItem Header="Columns">
                 <local:ColumnsView/>

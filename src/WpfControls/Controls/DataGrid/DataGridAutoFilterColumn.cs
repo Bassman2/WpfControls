@@ -1,6 +1,6 @@
 ﻿namespace WpfControls.Controls;
 
-public abstract class DataGridAutoFilterColumn : DataGridTextColumn, IFilterColumn
+public abstract class DataGridAutoFilterColumn : DataGridTextColumn//, IFilterColumn
 {
     private ComboBox? filterComboBox;
     protected List<FilterViewModel>? filters;
@@ -113,7 +113,7 @@ public abstract class DataGridAutoFilterColumn : DataGridTextColumn, IFilterColu
 
     #region IFilterColumn
 
-    public abstract void ItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue);
+    public abstract void FillColumn(ICollectionView items);
 
     public abstract bool Filter(object obj);
 

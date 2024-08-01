@@ -2,11 +2,11 @@
 
 public class DataGridAutoFilterEnumColumn : DataGridAutoFilterColumn
 {
-    public override void ItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue)
+    public override void FillColumn(ICollectionView items)
     {
-        if (newValue is not null)
+        if (items is not null)
         {
-            Type type = BindingType(newValue);
+            Type type = BindingType(items);
             if (!type.IsEnum)
             {
                 throw new Exception($"{nameof(DataGridAutoFilterEnumColumn)} Binding object must be an Enum");

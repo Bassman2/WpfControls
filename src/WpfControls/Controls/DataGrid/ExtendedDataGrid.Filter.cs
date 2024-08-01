@@ -29,15 +29,7 @@ public partial class ExtendedDataGrid : DataGrid
         this.Count = newValue.Cast<object>().Count();
 
         // Fill columns
-        foreach (IFilterColumn column in this.Columns.Where(c => c is IFilterColumn).Cast<IFilterColumn>())
-        {
-            if (newValue is not ICollectionView)
-            {
-                throw new ArgumentException("ItemsSource must be of type ICollectionView for filtering");
-            }
-
-            column.ItemsSourceChanged(oldValue, newValue);
-        }
+        FillColumns(this.Columns);
 
         // activate filtering
         if (newValue is ICollectionView collectionView)
@@ -47,10 +39,34 @@ public partial class ExtendedDataGrid : DataGrid
         }
     }
 
+    private void OnColumnsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.Action == NotifyCollectionChangedAction.Add)
+        {
+            FillColumns(e.NewItems!.Cast<DataGridColumn>());
+        }
+        
+    }
+
+    private void FillColumns(IEnumerable<DataGridColumn> columns)
+    {
+        if (this.ItemsSource is null)
+        {
+            return;
+        }
+
+        if (this.ItemsSource is not ICollectionView && columns.Any(c => c is DataGridAutoFilterColumn))
+        {
+            throw new ArgumentException($"ItemsSource must be of type ICollectionView for filtering!");
+        }
+
+        columns.OfType<DataGridAutoFilterColumn>().ToList().ForEach(c => c.FillColumn((ICollectionView)this.ItemsSource));
+    }
+
     private bool DoFilter(object obj)
     {
         bool res = true;
-        foreach (IFilterColumn column in this.Columns.Where(c => c is IFilterColumn).Cast<IFilterColumn>())
+        foreach (DataGridAutoFilterColumn column in this.Columns.Where(c => c is DataGridAutoFilterColumn).Cast<DataGridAutoFilterColumn>())
         {
             res &= column.Filter(obj);
         }

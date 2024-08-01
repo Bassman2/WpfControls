@@ -5,11 +5,11 @@ public partial class ExtendedDataGrid : DataGrid
     public bool IsEditing { get; set; }
     private object? targetItem;
 
-    public ExtendedDataGrid()
-    {
-        this.AllowDrop = true;
-        this.CanUserSortColumns = false;
-    }
+    //public ExtendedDataGrid()
+    //{
+    //    this.AllowDrop = true;
+    //    this.CanUserSortColumns = false;
+    //}
 
     public static readonly DependencyProperty CanUserSortRowsProperty = 
         DependencyProperty.Register("CanUserSortRows", typeof(bool), typeof(ExtendedDataGrid), new FrameworkPropertyMetadata(false, new PropertyChangedCallback(

@@ -4,24 +4,6 @@ namespace WpfControls.Controls;
 
 public class EnumComboBox : ComboBox
 {
-    ////private static readonly ResourceManager resourceManager = Rails.Properties.Resources.ResourceManager;
-
-    //private static readonly ResourceManager? resourceManager; // = new ResourceManager("Rails.Properties.Resources", Assembly.GetEntryAssembly()!);
-
-    //static EnumComboBox()
-    //{
-    //    if (!DesignerProperties.GetIsInDesignMode(new DependencyObject()))
-    //    {
-    //        Assembly ass = Assembly.GetEntryAssembly()!;
-    //        //var x = ass.ExportedTypes.SingleOrDefault(t => t.Name == "Resources");
-    //        string? name = ass.ExportedTypes.SingleOrDefault(t => t.Name == "Resources")?.FullName!;
-    //        if (name is not null)
-    //        {
-    //            resourceManager = new ResourceManager(name, ass);
-    //        }
-    //    }
-    //}
-
     public EnumComboBox()
     {
         DisplayMemberPath = "Description";

@@ -172,8 +172,7 @@ public abstract class DataGridAutoFilterColumn : DataGridTextColumn//, IFilterCo
         public FilterViewModel(object item)
         {
             FieldInfo? fieldInfo = item.GetType().GetField(item.ToString()!);
-            DescriptionAttribute? attribute = fieldInfo!.GetCustomAttributes(typeof(DescriptionAttribute), false).FirstOrDefault() as DescriptionAttribute;
-            this.Name = (attribute == null ? item.ToString() : attribute.Description)!;
+            this.Name = fieldInfo!.GetCustomAttribute<DescriptionAttribute>()?.Description ?? item.ToString();
             this.Value = item;
             this.IsChecked = true;
         }

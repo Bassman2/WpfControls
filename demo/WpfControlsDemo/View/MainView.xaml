@@ -14,13 +14,13 @@
     </Window.Resources>
     <Grid>
         <TabControl>            
-            <TabItem Header="Auto Filter">
+            <TabItem Header="Auto Filter DataGrid">
                 <local:AutoFilterView/>
             </TabItem>
-            <TabItem Header="Filter">
+            <TabItem Header="Filter DataGrid">
                 <local:FilterView/>
             </TabItem>
-            <TabItem Header="Columns">
+            <TabItem Header="Columns DataGrid">
                 <local:ColumnsView/>
             </TabItem>
             <TabItem Header="Numeric">

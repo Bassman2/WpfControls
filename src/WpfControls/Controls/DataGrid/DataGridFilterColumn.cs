@@ -3,8 +3,8 @@
 public abstract class DataGridFilterColumn : DataGridTextColumn
 {
     private ComboBox? filterComboBox;
-    protected List<FilterViewModel>? filters;
-    private readonly FilterViewModel allFilter = new();
+    protected List<FilterItem>? filters;
+    private readonly FilterItem allFilter = new();
 
     public DataGridFilterColumn()
     {
@@ -34,7 +34,7 @@ public abstract class DataGridFilterColumn : DataGridTextColumn
         HeaderTemplate = headerTemplate;
     }
 
-    public void OnLoaded(object sender, RoutedEventArgs e)
+    private void OnLoaded(object sender, RoutedEventArgs e)
     {
         filterComboBox = (ComboBox)sender;
 
@@ -48,12 +48,12 @@ public abstract class DataGridFilterColumn : DataGridTextColumn
         dataTemplate.VisualTree = checkBox;
         filterComboBox.ItemTemplate = dataTemplate;
 
-        Update();
+        FillFilters();
     }
 
-    public virtual void OnChecked(object sender, RoutedEventArgs e)
+    protected virtual void OnChecked(object sender, RoutedEventArgs e)
     {
-        FilterViewModel fvm = (FilterViewModel)((CheckBox)sender).DataContext;
+        FilterItem fvm = (FilterItem)((CheckBox)sender).DataContext;
 
         Debug.WriteLine($"OnChecked {fvm.Name}");
 
@@ -89,7 +89,16 @@ public abstract class DataGridFilterColumn : DataGridTextColumn
         }
     }
 
-    protected void Update()
+    protected override void OnBindingChanged(BindingBase oldBinding, BindingBase newBinding)
+    {
+        if (newBinding != null && newBinding is Binding binding)
+        {
+            binding.Converter = new DescriptionConverter();
+        }
+        base.OnBindingChanged(oldBinding, newBinding);
+    }
+
+    protected void FillFilters()
     {
         if (filterComboBox != null && filters != null)
         {
@@ -97,13 +106,13 @@ public abstract class DataGridFilterColumn : DataGridTextColumn
         }
     }
 
-    [DebuggerDisplay("FilterViewModel {Name}")]
-    public class FilterViewModel : INotifyPropertyChanged
+    [DebuggerDisplay("FilterItem {Name}")]
+    protected class FilterItem : INotifyPropertyChanged
     {
         /// <summary>
         /// Constructor for 'All' filter item
         /// </summary>
-        public FilterViewModel()
+        public FilterItem()
         {
             this.IsAll = true;
             this.Name = "All";
@@ -113,7 +122,7 @@ public abstract class DataGridFilterColumn : DataGridTextColumn
         /// <summary>
         /// Constructor for flag enum filter item
         /// </summary>
-        public FilterViewModel(object item)
+        public FilterItem(object item)
         {
             FieldInfo? fieldInfo = item.GetType().GetField(item.ToString()!);
             this.Name = fieldInfo!.GetCustomAttribute<DescriptionAttribute>()?.Description ?? item.ToString();
@@ -124,7 +133,7 @@ public abstract class DataGridFilterColumn : DataGridTextColumn
         /// <summary>
         /// Constructor for text filter item
         /// </summary>
-        public FilterViewModel(string item)
+        public FilterItem(string item)
         {
             this.Name = item;
             this.Value = item;
@@ -134,7 +143,7 @@ public abstract class DataGridFilterColumn : DataGridTextColumn
         /// <summary>
         /// Constructor for IFilterItem filter item
         /// </summary>
-        public FilterViewModel(IFilterItem item)
+        public FilterItem(IFilterItem item)
         {
             this.Name = item.Name;
             this.Value = item.Value;

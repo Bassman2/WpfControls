@@ -5,17 +5,29 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WpfControlsDemo.View"
              xmlns:ctl="clr-namespace:WpfControls.Controls;assembly=WpfControls"
+             xmlns:vm="clr-namespace:WpfControlsDemo.ViewModel"
+             d:DataContext="{d:DesignInstance Type=vm:ColumnsViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.DataContext>
+        <vm:ColumnsViewModel/>
+    </UserControl.DataContext>
     <Grid>
         <DataGrid 
             ItemsSource="{Binding Items}"
+            CanUserSortColumns="True"
             AutoGenerateColumns="False"
+            HeadersVisibility="Column"
+            GridLinesVisibility="None" 
+            IsSynchronizedWithCurrentItem="True"
             Margin="8">
             <DataGrid.Columns>
-                <ctl:DataGridButtonColumn Header="DataGridButtonColumn" Command="{Binding ButtonCommand}" />
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
+                <DataGridTextColumn Header="Description" Binding="{Binding Description}"/>
+                <ctl:DataGridButtonColumn Header="DataGridButtonColumn" ToolTipService.ToolTip="Button" Command="{Binding ButtonCommand}" />
                 <ctl:DataGridColorColumn Header="DataGridColorColumn" Binding="{Binding Color}" />
                 <ctl:DataGridPasswordColumn Header="DataGridPasswordColumn" Binding="{Binding Password}" />
+                <DataGridTextColumn Header="Password" Binding="{Binding Password}"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

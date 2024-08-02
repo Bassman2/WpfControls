@@ -43,7 +43,7 @@ public partial class AutoFilterViewModel : ObservableObject
 {
     public AutoFilterViewModel()
     {
-        AutoFilterItems = new ListCollectionView(new List<AutoFilterItemViewModel>(
+        Items = new ListCollectionView(new List<AutoFilterItemViewModel>(
             [
             new("Peter", "Peter Description", Enum1.Active,   Enum2.Green, "Group D"),
             new("PaulS", "PaulS Description", Enum1.Inactive, Enum2.Green, "Group D"),
@@ -59,5 +59,5 @@ public partial class AutoFilterViewModel : ObservableObject
     }
     
     [ObservableProperty]
-    private ListCollectionView autoFilterItems;    
+    private ListCollectionView items;    
 }

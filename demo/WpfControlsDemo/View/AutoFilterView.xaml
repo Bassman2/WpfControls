@@ -14,7 +14,7 @@
     </UserControl.DataContext>
     <Grid>
         <ctl:ExtendedDataGrid
-            ItemsSource="{Binding AutoFilterItems}"
+            ItemsSource="{Binding Items}"
             CanUserSortRows="False"
             CanUserSortColumns="True"
             AutoGenerateColumns="False"

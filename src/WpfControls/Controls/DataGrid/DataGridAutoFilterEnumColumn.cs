@@ -4,23 +4,23 @@ public class DataGridAutoFilterEnumColumn : DataGridAutoFilterColumn
 {
     public override void FillColumn(ICollectionView items)
     {
-        if (items is not null)
+        if (items is not null && items.CurrentItem is not null)
         {
-            Type type = BindingType(items);
+            Type type = this.Binding.GetBindingType(items.CurrentItem)!;
             if (!type.IsEnum)
             {
                 throw new Exception($"{nameof(DataGridAutoFilterEnumColumn)} Binding object must be an Enum");
             }
 
-            this.filters = Enum.GetValues(type).Cast<object>().Select(e => new FilterViewModel(e)).ToList();
+            this.filters = Enum.GetValues(type).Cast<object>().Select(e => new FilterItem(e)).ToList();
             this.checkedFilters = filters?.Where(f => f.IsChecked == true).ToList();
-            Update();
+            FillFilters();
         }
         else
         {
             this.filters = null;
             this.checkedFilters = null;
-            Update();
+            FillFilters();
         }
     }
 

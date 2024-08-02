@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:options="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
     xmlns:c="clr-namespace:WpfControls.Controls">
-
+    
     <Geometry x:Key="IncGeometry">M 1,8 A 6.5,6.5 180 1 1 14,8 A 6.5,6.5 180 1 1 1,8 M 4,8 L 11,8 M 7.5,4 L 7.5,12 M 0,0 Z</Geometry>
     <Geometry x:Key="DecGeometry">M 1,8 A 6.5,6.5 180 1 1 14,8 A 6.5,6.5 180 1 1 1,8 M 4,8 L 11,8 M 0,0 Z</Geometry>
 

@@ -1,16 +1,32 @@
-﻿using System.Windows.Media.Animation;
-
-namespace WpfControls.Controls;
+﻿namespace WpfControls.Controls;
 
 // https://github.com/dotnet/wpf/tree/main/src/Microsoft.DotNet.Wpf/src/PresentationFramework/System/Windows/Controls
 
 public class DataGridColorColumn : DataGridBoundColumn
 {
-    private class ColorName { public Color Color; public required string Name; }
-    private readonly static List<ColorName> ColorNames = typeof(Colors).GetProperties().Select(p => new ColorName { Color = ((Color?)p.GetValue(null)).GetValueOrDefault(Colors.Transparent), Name = p.Name }).ToList();
-    private readonly static List<Color> ColorList = typeof(Colors).GetProperties().Select(p => ((Color?)p.GetValue(null)).GetValueOrDefault()).ToList();
+    [DebuggerDisplay("ColorName {Name}")]
+    private class ColorName 
+    {   
+        public Color Color; 
+        public required string Name; 
+    }
 
-    private static string ToColorName(Color color) => ColorNames.FirstOrDefault(c => c.Color == color)?.Name ?? "Unknown";
+    //private readonly static List<ColorName> colorNames = typeof(Colors).GetProperties().Select(p => new ColorName { Color = ((Color?)p.GetValue(null)).GetValueOrDefault(Colors.Transparent), Name = p.Name }).ToList();
+    //private readonly static List<Color> colorList = typeof(Colors).GetProperties().Select(p => ((Color?)p.GetValue(null)).GetValueOrDefault()).ToList();
+
+    private readonly static List<ColorName> colorNames;
+    private readonly static List<Color> colorList;
+
+    static DataGridColorColumn()
+    {
+        var colors = typeof(Colors).GetProperties();
+        colorNames = colors.Select(p => new ColorName { Color = ((Color?)p.GetValue(null)).GetValueOrDefault(Colors.Transparent), Name = p.Name }).ToList();
+        colorList = colors.Select(p => ((Color?)p.GetValue(null)).GetValueOrDefault()).ToList();
+    }
+
+
+
+    private static string ToColorName(Color color) => colorNames.FirstOrDefault(c => c.Color == color)?.Name ?? "Unknown";
 
     protected override FrameworkElement GenerateElement(DataGridCell cell, object dataItem)
     {
@@ -33,7 +49,7 @@ public class DataGridColorColumn : DataGridBoundColumn
 
     protected override FrameworkElement GenerateEditingElement(DataGridCell cell, object dataItem)
     {
-        ComboBox comboBox = new() { ItemsSource = ColorList };
+        ComboBox comboBox = new() { ItemsSource = colorList };
         comboBox.SetBinding(ComboBox.SelectedItemProperty, this.Binding);
 
         DataTemplate dataTemplate = new(typeof(ComboBox));

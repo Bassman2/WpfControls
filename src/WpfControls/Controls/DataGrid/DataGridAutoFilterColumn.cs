@@ -2,9 +2,9 @@
 
 public abstract class DataGridAutoFilterColumn : DataGridFilterColumn
 {
-    protected List<FilterViewModel>? checkedFilters;
+    protected List<FilterItem>? checkedFilters;
 
-    public override void OnChecked(object sender, RoutedEventArgs e)
+    protected override void OnChecked(object sender, RoutedEventArgs e)
     {
         base.OnChecked(sender, e);
 
@@ -19,17 +19,4 @@ public abstract class DataGridAutoFilterColumn : DataGridFilterColumn
     public abstract void FillColumn(ICollectionView items);
 
     public abstract bool Filter(object obj);
-
-    
-    #region Binding Helper
-
-    protected Type BindingType(IEnumerable newValue)
-    {
-        object obj = newValue.Cast<object>().First();
-        return this.Binding.GetBindingType(obj)!;
-    }
-
-    
-
-    #endregion
 }

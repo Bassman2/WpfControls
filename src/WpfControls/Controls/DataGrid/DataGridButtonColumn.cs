@@ -38,9 +38,12 @@ public class DataGridButtonColumn : DataGridBoundColumn
         {
             button.Content = "Edit";
         }
-        button.SetBinding(Button.CommandProperty, this.Binding);
-        //button.Command = this.Binding;
-        button.CommandParameter = dataItem;
+
+        if (this.Binding is not null)
+        {
+            button.SetBinding(Button.CommandProperty, this.Binding);
+            button.CommandParameter = dataItem;
+        }
         return button;
     }
 

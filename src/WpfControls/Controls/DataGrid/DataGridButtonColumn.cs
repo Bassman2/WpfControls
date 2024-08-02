@@ -9,7 +9,6 @@ public class DataGridButtonColumn : DataGridBoundColumn
 
     public static readonly DependencyProperty CommandProperty =
            DependencyProperty.Register("Command", typeof(ICommand), typeof(DataGridButtonColumn));
-    //new PropertyMetadata(null, (d, e) => ((ColorNameBehavior)d).AssociatedObject.Text = DataGridColorColumn.ToColorName((Color)e.NewValue)));
 
     public ICommand Command
     {
@@ -19,7 +18,6 @@ public class DataGridButtonColumn : DataGridBoundColumn
 
     public static readonly DependencyProperty ContentTemplateProperty =
            DependencyProperty.Register("ContentTemplate", typeof(DataTemplate), typeof(DataGridButtonColumn));
-    //new PropertyMetadata(null, (d, e) => ((ColorNameBehavior)d).AssociatedObject.Text = DataGridColorColumn.ToColorName((Color)e.NewValue)));
 
     private DataTemplate ContentTemplate
     {

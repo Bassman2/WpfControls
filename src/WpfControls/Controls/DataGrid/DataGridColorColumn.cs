@@ -4,24 +4,33 @@
 
 public class DataGridColorColumn : DataGridBoundColumn
 {
-    [DebuggerDisplay("ColorName {Name}")]
+    [DebuggerDisplay("ColorName {Color} {Name}")]
     private class ColorName 
     {   
-        public Color Color; 
-        public required string Name; 
+        public ColorName(PropertyInfo propertyInfo) 
+        {
+            Name = propertyInfo.Name;
+            //Color = ((Color?)propertyInfo.GetValue(null)).GetValueOrDefault(Colors.Transparent);
+            Color = (Color)propertyInfo.GetValue(null)!;
+            Brush = new SolidColorBrush(Color);
+        }
+
+        public string Name { get; }
+        public Color Color { get; } 
+        public Brush Brush { get; } 
     }
 
     //private readonly static List<ColorName> colorNames = typeof(Colors).GetProperties().Select(p => new ColorName { Color = ((Color?)p.GetValue(null)).GetValueOrDefault(Colors.Transparent), Name = p.Name }).ToList();
     //private readonly static List<Color> colorList = typeof(Colors).GetProperties().Select(p => ((Color?)p.GetValue(null)).GetValueOrDefault()).ToList();
 
     private readonly static List<ColorName> colorNames;
-    private readonly static List<Color> colorList;
+    //private readonly static List<Color> colorList;
 
     static DataGridColorColumn()
     {
         var colors = typeof(Colors).GetProperties();
-        colorNames = colors.Select(p => new ColorName { Color = ((Color?)p.GetValue(null)).GetValueOrDefault(Colors.Transparent), Name = p.Name }).ToList();
-        colorList = colors.Select(p => ((Color?)p.GetValue(null)).GetValueOrDefault()).ToList();
+        colorNames = colors.Select(p => new ColorName(p)).ToList();
+        //colorList = colors.Select(p => ((Color?)p.GetValue(null)).GetValueOrDefault()).ToList();
     }
 
 
@@ -49,8 +58,10 @@ public class DataGridColorColumn : DataGridBoundColumn
 
     protected override FrameworkElement GenerateEditingElement(DataGridCell cell, object dataItem)
     {
-        ComboBox comboBox = new() { ItemsSource = colorList };
-        comboBox.SetBinding(ComboBox.SelectedItemProperty, this.Binding);
+        ComboBox comboBox = new() { ItemsSource = colorNames };
+        comboBox.SetBinding(ComboBox.SelectedValueProperty, this.Binding);
+        comboBox.SetValue(ComboBox.SelectedValuePathProperty, "Color");
+
 
         DataTemplate dataTemplate = new(typeof(ComboBox));
 
@@ -58,14 +69,14 @@ public class DataGridColorColumn : DataGridBoundColumn
         stackPanel.SetValue(StackPanel.OrientationProperty, Orientation.Horizontal);
 
         FrameworkElementFactory rectangle = new(typeof(System.Windows.Shapes.Rectangle));
-        rectangle.SetBinding(System.Windows.Shapes.Rectangle.FillProperty, new Binding(".") { Converter = new ColorToBrushConverter() });
+        rectangle.SetBinding(System.Windows.Shapes.Rectangle.FillProperty, new Binding("Brush"));
         rectangle.SetValue(System.Windows.Shapes.Rectangle.WidthProperty, 14.0);
         rectangle.SetValue(System.Windows.Shapes.Rectangle.HeightProperty, 14.0);
         rectangle.SetValue(System.Windows.Shapes.Rectangle.MarginProperty, new Thickness(0, 0, 2, 0));
         stackPanel.AppendChild(rectangle);
 
         FrameworkElementFactory textBlock = new(typeof(TextBlock));
-        textBlock.SetBinding(TextBlock.TextProperty, new Binding(".") { Converter = new ColorToNameConverter() });
+        textBlock.SetBinding(TextBlock.TextProperty, new Binding("Name")); // { Converter = new ColorToNameConverter() });
 
         stackPanel.AppendChild(textBlock);
 
@@ -86,18 +97,6 @@ public class DataGridColorColumn : DataGridBoundColumn
             get => (Color)GetValue(ColorProperty);
             set => SetValue(ColorProperty, value);
         }
-    }
-
-    public class ColorToBrushConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture) => new SolidColorBrush((Color)value);
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => throw new NotImplementedException();
-    }
-
-    public class ColorToNameConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture) => DataGridColorColumn.ToColorName((Color)value);
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => throw new NotImplementedException();
     }
 }
 

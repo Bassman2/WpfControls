@@ -12,7 +12,7 @@ public class DataGridAutoFilterTextColumn : DataGridAutoFilterColumn
                 throw new Exception($"{nameof(DataGridAutoFilterTextColumn)} Binding object must be an string");
             }
 
-            var l = items.Cast<object>().Select(o => GetBindingText(this.Binding, o) ?? string.Empty).Distinct().ToList();
+            var l = items.Cast<object>().Select(o => this.Binding.GetBindingText(o) ?? string.Empty).Distinct().ToList();
                         
             this.filters = l.Order().Select(i => new FilterViewModel(i)).ToList();
             this.checkedFilters = filters?.Where(f => f.IsChecked == true).ToList();
@@ -28,7 +28,7 @@ public class DataGridAutoFilterTextColumn : DataGridAutoFilterColumn
 
     public override bool Filter(object obj)
     {
-        string text = GetBindingText(this.Binding, obj) ?? string.Empty;
+        string text = this.Binding.GetBindingText(obj) ?? string.Empty;
         return this.checkedFilters!.Any(c => (string)c.Value! == text);
     }    
 }

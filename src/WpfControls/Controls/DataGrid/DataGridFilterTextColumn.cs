@@ -1,54 +1,54 @@
 ﻿namespace WpfControls.Controls;
 
-public partial class DataGridFilterTextColumn : DataGridTextColumn
+public partial class DataGridFilterTextColumn : DataGridFilterColumn
 {
-    private ComboBox? filterComboBox;
-    private List<FilterViewModel>? filters;
-    private readonly FilterViewModel allFilter = new();
+    //private ComboBox? filterComboBox;
+    //private List<FilterViewModel>? filters;
+    //private readonly FilterViewModel allFilter = new();
 
-    public DataGridFilterTextColumn()
-    {
-        IsReadOnly = true;
-        var headerTemplate = new DataTemplate() { DataType = typeof(string) };
+    //public DataGridFilterTextColumn()
+    //{
+    //    IsReadOnly = true;
+    //    var headerTemplate = new DataTemplate() { DataType = typeof(string) };
 
-        var dockPanel = new FrameworkElementFactory(typeof(DockPanel));
-        dockPanel.SetValue(DockPanel.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
+    //    var dockPanel = new FrameworkElementFactory(typeof(DockPanel));
+    //    dockPanel.SetValue(DockPanel.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
 
-        var textBlock = new FrameworkElementFactory(typeof(TextBlock));
-        textBlock.SetBinding(TextBlock.TextProperty, new Binding("Header") { Source = this });
-        textBlock.SetValue(TextBlock.VerticalAlignmentProperty, VerticalAlignment.Center);
+    //    var textBlock = new FrameworkElementFactory(typeof(TextBlock));
+    //    textBlock.SetBinding(TextBlock.TextProperty, new Binding("Header") { Source = this });
+    //    textBlock.SetValue(TextBlock.VerticalAlignmentProperty, VerticalAlignment.Center);
 
-        var comboBox = new FrameworkElementFactory(typeof(ComboBox));
-        comboBox.SetValue(DockPanel.HorizontalAlignmentProperty, HorizontalAlignment.Right);
-        comboBox.SetValue(DockPanel.DockProperty, Dock.Right);
-        comboBox.SetValue(ComboBox.WidthProperty, 16.0);
-        comboBox.SetValue(ComboBox.IsEnabledProperty, true);
-        comboBox.SetBinding(ComboBox.DataContextProperty, this.Binding);
-        comboBox.AddHandler(FrameworkElement.LoadedEvent, new RoutedEventHandler(OnLoaded));
+    //    var comboBox = new FrameworkElementFactory(typeof(ComboBox));
+    //    comboBox.SetValue(DockPanel.HorizontalAlignmentProperty, HorizontalAlignment.Right);
+    //    comboBox.SetValue(DockPanel.DockProperty, Dock.Right);
+    //    comboBox.SetValue(ComboBox.WidthProperty, 16.0);
+    //    comboBox.SetValue(ComboBox.IsEnabledProperty, true);
+    //    comboBox.SetBinding(ComboBox.DataContextProperty, this.Binding);
+    //    comboBox.AddHandler(FrameworkElement.LoadedEvent, new RoutedEventHandler(OnLoaded));
 
-        dockPanel.AppendChild(textBlock);
-        dockPanel.AppendChild(comboBox);
+    //    dockPanel.AppendChild(textBlock);
+    //    dockPanel.AppendChild(comboBox);
 
-        headerTemplate.VisualTree = dockPanel;
-        HeaderTemplate = headerTemplate;
-    }
+    //    headerTemplate.VisualTree = dockPanel;
+    //    HeaderTemplate = headerTemplate;
+    //}
 
-    public void OnLoaded(object sender, RoutedEventArgs e)
-    {
-        filterComboBox = (ComboBox)sender;
+    //public void OnLoaded(object sender, RoutedEventArgs e)
+    //{
+    //    filterComboBox = (ComboBox)sender;
 
-        DataTemplate dataTemplate = new(typeof(ComboBox));
-        FrameworkElementFactory checkBox = new(typeof(CheckBox));
-        checkBox.SetBinding(CheckBox.IsCheckedProperty, new Binding("IsChecked"));
-        checkBox.SetBinding(CheckBox.ContentProperty, new Binding("Name"));
-        checkBox.AddHandler(CheckBox.CheckedEvent, new RoutedEventHandler(OnChecked));
-        checkBox.AddHandler(CheckBox.UncheckedEvent, new RoutedEventHandler(OnChecked));
-        checkBox.AddHandler(CheckBox.IndeterminateEvent, new RoutedEventHandler(OnChecked));
-        dataTemplate.VisualTree = checkBox;
-        filterComboBox.ItemTemplate = dataTemplate;
+    //    DataTemplate dataTemplate = new(typeof(ComboBox));
+    //    FrameworkElementFactory checkBox = new(typeof(CheckBox));
+    //    checkBox.SetBinding(CheckBox.IsCheckedProperty, new Binding("IsChecked"));
+    //    checkBox.SetBinding(CheckBox.ContentProperty, new Binding("Name"));
+    //    checkBox.AddHandler(CheckBox.CheckedEvent, new RoutedEventHandler(OnChecked));
+    //    checkBox.AddHandler(CheckBox.UncheckedEvent, new RoutedEventHandler(OnChecked));
+    //    checkBox.AddHandler(CheckBox.IndeterminateEvent, new RoutedEventHandler(OnChecked));
+    //    dataTemplate.VisualTree = checkBox;
+    //    filterComboBox.ItemTemplate = dataTemplate;
 
-        Update();
-    }
+    //    Update();
+    //}
 
     protected override void OnBindingChanged(BindingBase oldBinding, BindingBase newBinding)
     {
@@ -59,56 +59,50 @@ public partial class DataGridFilterTextColumn : DataGridTextColumn
         base.OnBindingChanged(oldBinding, newBinding);
     }
     
-    public void OnChecked(object sender, RoutedEventArgs e)
+    public override void OnChecked(object sender, RoutedEventArgs e)
     {
-        FilterViewModel fvm = (FilterViewModel)((CheckBox)sender).DataContext;
+        base.OnChecked(sender, e);
+        //FilterViewModel fvm = (FilterViewModel)((CheckBox)sender).DataContext;
 
-        Debug.WriteLine($"OnChecked {fvm.Name}");
+        //Debug.WriteLine($"OnChecked {fvm.Name}");
 
-        if (fvm.IsAll) // if All button
-        {
-            switch (fvm.IsChecked)
-            {
-            case true:
-                filters?.Where(f => f.IsChecked == false).ToList().ForEach(f => f.IsChecked = true);
-                break;
-            case false:
-                filters?.Where(f => f.IsChecked == true).ToList().ForEach(f => f.IsChecked = false);
-                break;
-            case null:
-                break;
-            }
-        }
-        else
-        {
-            // update all button state
-            if (filters?.All(f => f.IsChecked == true) ?? false)
-            {
-                this.allFilter!.IsChecked = true;
-            }
-            else if (filters?.All(f => f.IsChecked == false) ?? false)
-            {
-                this.allFilter!.IsChecked = false;
-            }
-            else
-            {
-                this.allFilter!.IsChecked = null;
-            }
-        }
+        //if (fvm.IsAll) // if All button
+        //{
+        //    switch (fvm.IsChecked)
+        //    {
+        //    case true:
+        //        filters?.Where(f => f.IsChecked == false).ToList().ForEach(f => f.IsChecked = true);
+        //        break;
+        //    case false:
+        //        filters?.Where(f => f.IsChecked == true).ToList().ForEach(f => f.IsChecked = false);
+        //        break;
+        //    case null:
+        //        break;
+        //    }
+        //}
+        //else
+        //{
+        //    // update all button state
+        //    if (filters?.All(f => f.IsChecked == true) ?? false)
+        //    {
+        //        this.allFilter!.IsChecked = true;
+        //    }
+        //    else if (filters?.All(f => f.IsChecked == false) ?? false)
+        //    {
+        //        this.allFilter!.IsChecked = false;
+        //    }
+        //    else
+        //    {
+        //        this.allFilter!.IsChecked = null;
+        //    }
+        //}
+
         // set filter value to trigger new filtering
-        int filterValue = filters?.Where(f => f.IsChecked == true).Select(f => f.Value).Aggregate((int)0, (a, b) => (int)(a | b)) ?? 0;
+        int filterValue = filters?.Where(f => f.IsChecked == true).Select(f => f.Value).Aggregate((int)0, (a, b) => (int)(((int)a) | ((int)b!))) ?? 0;
         if (filterValue != this.FilterValue)
         {
             Debug.WriteLine($"FilterValue {filterValue}");
             this.FilterValue = filterValue;
-        }
-    }
-
-    private void Update()
-    {
-        if (filterComboBox != null && filters != null)
-        {
-            filterComboBox.ItemsSource = filters?.Prepend(allFilter);
         }
     }
 
@@ -155,61 +149,61 @@ public partial class DataGridFilterTextColumn : DataGridTextColumn
     }
    
 
-    [DebuggerDisplay("FilterViewModel {Name}")]
-    public class FilterViewModel : INotifyPropertyChanged
-    {
-        /// <summary>
-        /// Constructor for 'All' filter item
-        /// </summary>
-        public FilterViewModel()
-        {
-            this.IsAll = true;
-            this.Name = "All";
-            this.IsChecked = true;
-        }
+    //[DebuggerDisplay("FilterViewModel {Name}")]
+    //public class FilterViewModel : INotifyPropertyChanged
+    //{
+    //    /// <summary>
+    //    /// Constructor for 'All' filter item
+    //    /// </summary>
+    //    public FilterViewModel()
+    //    {
+    //        this.IsAll = true;
+    //        this.Name = "All";
+    //        this.IsChecked = true;
+    //    }
 
-        /// <summary>
-        /// Constructor for flag enum filter item
-        /// </summary>
-        public FilterViewModel(object item)
-        {
-            FieldInfo? fieldInfo = item.GetType().GetField(item.ToString()!);
-            DescriptionAttribute? attribute = fieldInfo!.GetCustomAttributes(typeof(DescriptionAttribute), false).FirstOrDefault() as DescriptionAttribute;
-            this.Name = (attribute == null ? item.ToString() : attribute.Description)!;
-            this.Value = (int)item; 
-            this.IsChecked = true;
-        }
+    //    /// <summary>
+    //    /// Constructor for flag enum filter item
+    //    /// </summary>
+    //    public FilterViewModel(object item)
+    //    {
+    //        FieldInfo? fieldInfo = item.GetType().GetField(item.ToString()!);
+    //        DescriptionAttribute? attribute = fieldInfo!.GetCustomAttributes(typeof(DescriptionAttribute), false).FirstOrDefault() as DescriptionAttribute;
+    //        this.Name = (attribute == null ? item.ToString() : attribute.Description)!;
+    //        this.Value = (int)item; 
+    //        this.IsChecked = true;
+    //    }
 
-        /// <summary>
-        /// Constructor for IFilterItem filter item
-        /// </summary>
-        public FilterViewModel(IFilterItem item)
-        {
-            this.Name = item.Name;
-            this.Value = item.Value;
-            this.IsChecked = true;
-        }
+    //    /// <summary>
+    //    /// Constructor for IFilterItem filter item
+    //    /// </summary>
+    //    public FilterViewModel(IFilterItem item)
+    //    {
+    //        this.Name = item.Name;
+    //        this.Value = item.Value;
+    //        this.IsChecked = true;
+    //    }
 
-        public event PropertyChangedEventHandler? PropertyChanged;
+    //    public event PropertyChangedEventHandler? PropertyChanged;
 
-        public bool IsAll { get; } = false;
+    //    public bool IsAll { get; } = false;
 
-        public int Value { get; }
+    //    public int Value { get; }
                 
-        public string? Name { get; }
+    //    public string? Name { get; }
 
-        private bool? isChecked;
-        public bool? IsChecked
-        {
-            get => isChecked;
-            set
-            {
-                if (isChecked != value)
-                {
-                    isChecked = value;
-                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsChecked)));
-                }
-            }
-        }
-    }
+    //    private bool? isChecked;
+    //    public bool? IsChecked
+    //    {
+    //        get => isChecked;
+    //        set
+    //        {
+    //            if (isChecked != value)
+    //            {
+    //                isChecked = value;
+    //                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsChecked)));
+    //            }
+    //        }
+    //    }
+    //}
 }

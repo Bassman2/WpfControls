@@ -19,24 +19,17 @@ public class DataGridColorColumn : DataGridBoundColumn
         public Brush Brush { get; } 
     }
 
-    private readonly static List<ColorName> colorNames;
-    
-    static DataGridColorColumn()
-    {
-        colorNames = typeof(Colors).GetProperties().Select(p => new ColorName(p)).ToList();
-    }
-
-    private static string ToColorName(Color color) => colorNames.FirstOrDefault(c => c.Color == color)?.Name ?? "Unknown";
-
+    private readonly static List<ColorName> colorNames = typeof(Colors).GetProperties().Select(p => new ColorName(p)).ToList();
+   
     protected override FrameworkElement GenerateElement(DataGridCell cell, object dataItem)
     {
         Rectangle rectangle = new() { Width = 14, Height = 14, Margin = new Thickness(6, 0, 2, 0) };
-        Binding rectBinding = new Binding() { Path = ((Binding)this.Binding).Path, Converter = new ColorBrushConverter() };
+        Binding rectBinding = new() { Path = ((Binding)this.Binding).Path, Converter = new ColorBrushConverter() };
         BindingOperations.SetBinding(rectangle, Rectangle.FillProperty, rectBinding);
 
         // Color Name
-        TextBlock textBlock = new();// { Text = colorName.Name };
-        Binding textBinding = new Binding() { Path = ((Binding)this.Binding).Path, Converter = new ColorNameConverter() };
+        TextBlock textBlock = new();
+        Binding textBinding = new() { Path = ((Binding)this.Binding).Path, Converter = new ColorNameConverter() };
         BindingOperations.SetBinding(textBlock, TextBlock.TextProperty, textBinding);
 
         StackPanel stackPanel = new() { Orientation = Orientation.Horizontal };

@@ -17,10 +17,6 @@ global using System.Windows.Markup;
 global using System.Windows.Media;
 global using System.Windows.Shapes;
 
-
-// packages
-global using Microsoft.Xaml.Behaviors;
-
 global using WpfControls.Attributes;
 global using WpfControls.Controls;
 global using WpfControls.Controls.Primitives;

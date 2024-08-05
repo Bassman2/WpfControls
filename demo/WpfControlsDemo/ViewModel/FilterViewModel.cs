@@ -58,7 +58,7 @@ public partial class FilterItemViewModel : ObservableObject
     private string password = "xxxxxxx";
 
     [RelayCommand]
-    public void OnButton()
+    public static void OnButton()
     {
         MessageBox.Show("Button Pressed");
     }

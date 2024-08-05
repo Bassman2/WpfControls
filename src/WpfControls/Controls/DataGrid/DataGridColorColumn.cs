@@ -10,7 +10,6 @@ public class DataGridColorColumn : DataGridBoundColumn
         public ColorName(PropertyInfo propertyInfo) 
         {
             Name = propertyInfo.Name;
-            //Color = ((Color?)propertyInfo.GetValue(null)).GetValueOrDefault(Colors.Transparent);
             Color = (Color)propertyInfo.GetValue(null)!;
             Brush = new SolidColorBrush(Color);
         }
@@ -20,32 +19,17 @@ public class DataGridColorColumn : DataGridBoundColumn
         public Brush Brush { get; } 
     }
 
-    //private readonly static List<ColorName> colorNames = typeof(Colors).GetProperties().Select(p => new ColorName { Color = ((Color?)p.GetValue(null)).GetValueOrDefault(Colors.Transparent), Name = p.Name }).ToList();
-    //private readonly static List<Color> colorList = typeof(Colors).GetProperties().Select(p => ((Color?)p.GetValue(null)).GetValueOrDefault()).ToList();
-
     private readonly static List<ColorName> colorNames;
-    //private readonly static List<Color> colorList;
-
+    
     static DataGridColorColumn()
     {
-        var colors = typeof(Colors).GetProperties();
-        colorNames = colors.Select(p => new ColorName(p)).ToList();
-        //colorList = colors.Select(p => ((Color?)p.GetValue(null)).GetValueOrDefault()).ToList();
+        colorNames = typeof(Colors).GetProperties().Select(p => new ColorName(p)).ToList();
     }
-
-
 
     private static string ToColorName(Color color) => colorNames.FirstOrDefault(c => c.Color == color)?.Name ?? "Unknown";
 
     protected override FrameworkElement GenerateElement(DataGridCell cell, object dataItem)
     {
-        // Color Rectangle                
-
-        //Color color = (Color)this.Binding.GetBindingValue(dataItem)!;
-
-        //ColorName colorName = colorNames.First(c => c.Color == color);
-        
-        
         Rectangle rectangle = new() { Width = 14, Height = 14, Margin = new Thickness(6, 0, 2, 0) };
         Binding rectBinding = new Binding() { Path = ((Binding)this.Binding).Path, Converter = new ColorBrushConverter() };
         BindingOperations.SetBinding(rectangle, Rectangle.FillProperty, rectBinding);
@@ -118,19 +102,6 @@ public class DataGridColorColumn : DataGridBoundColumn
             return value;
         }
     }
-
-    //public class ColorNameBehavior : Behavior<TextBlock>
-    //{
-    //    public static readonly DependencyProperty ColorProperty =
-    //        DependencyProperty.Register("Color", typeof(Color), typeof(ColorNameBehavior),
-    //        new PropertyMetadata(Colors.Yellow, (d, e) => ((ColorNameBehavior)d).AssociatedObject.Text = DataGridColorColumn.ToColorName((Color)e.NewValue)));
-
-    //    public Color Color
-    //    {
-    //        get => (Color)GetValue(ColorProperty);
-    //        set => SetValue(ColorProperty, value);
-    //    }
-    //}
 }
 
 

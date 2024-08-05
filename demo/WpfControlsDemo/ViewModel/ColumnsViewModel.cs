@@ -10,7 +10,7 @@ public partial class ColumnsItemViewModel(string name, string description, Color
 
     [ObservableProperty]
     private Color color = color;
-
+    
     [ObservableProperty]
     private string password = "Demo";
 

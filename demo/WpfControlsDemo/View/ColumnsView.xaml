@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WpfControlsDemo.View"
+             xmlns:conv="clr-namespace:WpfControls.Converter;assembly=WpfControls"
              xmlns:ctl="clr-namespace:WpfControls.Controls;assembly=WpfControls"
              xmlns:vm="clr-namespace:WpfControlsDemo.ViewModel"
              d:DataContext="{d:DesignInstance Type=vm:ColumnsViewModel}"
@@ -12,6 +13,9 @@
     <UserControl.DataContext>
         <vm:ColumnsViewModel/>
     </UserControl.DataContext>
+    <UserControl.Resources>
+        <conv:DebugConverter x:Key="debugConverter"/>
+    </UserControl.Resources>
     <Grid>
         <DataGrid 
             ItemsSource="{Binding Items}"
@@ -26,6 +30,7 @@
                 <DataGridTextColumn Header="Description" Binding="{Binding Description}"/>
                 <ctl:DataGridButtonColumn Header="DataGridButtonColumn" ToolTipService.ToolTip="Button" Command="{Binding ButtonCommand}" />
                 <ctl:DataGridColorColumn Header="DataGridColorColumn" Binding="{Binding Color}" />
+                <DataGridTextColumn Header="Color" Binding="{Binding Color}"/>
                 <ctl:DataGridPasswordColumn Header="DataGridPasswordColumn" Binding="{Binding Password}" />
                 <DataGridTextColumn Header="Password" Binding="{Binding Password}"/>
             </DataGrid.Columns>

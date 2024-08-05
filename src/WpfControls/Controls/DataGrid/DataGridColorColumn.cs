@@ -40,15 +40,20 @@ public class DataGridColorColumn : DataGridBoundColumn
     protected override FrameworkElement GenerateElement(DataGridCell cell, object dataItem)
     {
         // Color Rectangle                
-        SolidColorBrush brush = new();
-        BindingOperations.SetBinding(brush, SolidColorBrush.ColorProperty, this.Binding);
-        System.Windows.Shapes.Rectangle rectangle = new() { Fill = brush, Width = 14, Height = 14, Margin = new Thickness(6, 0, 2, 0) };
+
+        //Color color = (Color)this.Binding.GetBindingValue(dataItem)!;
+
+        //ColorName colorName = colorNames.First(c => c.Color == color);
+        
+        
+        Rectangle rectangle = new() { Width = 14, Height = 14, Margin = new Thickness(6, 0, 2, 0) };
+        Binding rectBinding = new Binding() { Path = ((Binding)this.Binding).Path, Converter = new ColorBrushConverter() };
+        BindingOperations.SetBinding(rectangle, Rectangle.FillProperty, rectBinding);
 
         // Color Name
-        TextBlock textBlock = new();
-        ColorNameBehavior colorNameBehavior = new();
-        BindingOperations.SetBinding(colorNameBehavior, ColorNameBehavior.ColorProperty, this.Binding);
-        Interaction.GetBehaviors(textBlock).Add(colorNameBehavior);
+        TextBlock textBlock = new();// { Text = colorName.Name };
+        Binding textBinding = new Binding() { Path = ((Binding)this.Binding).Path, Converter = new ColorNameConverter() };
+        BindingOperations.SetBinding(textBlock, TextBlock.TextProperty, textBinding);
 
         StackPanel stackPanel = new() { Orientation = Orientation.Horizontal };
         stackPanel.Children.Add(rectangle);
@@ -86,18 +91,46 @@ public class DataGridColorColumn : DataGridBoundColumn
         return comboBox;
     }
 
-    public class ColorNameBehavior : Behavior<TextBlock>
+    public class ColorBrushConverter : IValueConverter
     {
-        public static readonly DependencyProperty ColorProperty =
-            DependencyProperty.Register("Color", typeof(Color), typeof(ColorNameBehavior),
-            new PropertyMetadata(Colors.Yellow, (d, e) => ((ColorNameBehavior)d).AssociatedObject.Text = DataGridColorColumn.ToColorName((Color)e.NewValue)));
-
-        public Color Color
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            get => (Color)GetValue(ColorProperty);
-            set => SetValue(ColorProperty, value);
+            Color color = (Color)value;
+            return colorNames.First(c => c.Color == color).Brush;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value;
         }
     }
+
+    public class ColorNameConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            Color color = (Color)value;
+            return colorNames.First(c => c.Color == color).Name;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value;
+        }
+    }
+
+    //public class ColorNameBehavior : Behavior<TextBlock>
+    //{
+    //    public static readonly DependencyProperty ColorProperty =
+    //        DependencyProperty.Register("Color", typeof(Color), typeof(ColorNameBehavior),
+    //        new PropertyMetadata(Colors.Yellow, (d, e) => ((ColorNameBehavior)d).AssociatedObject.Text = DataGridColorColumn.ToColorName((Color)e.NewValue)));
+
+    //    public Color Color
+    //    {
+    //        get => (Color)GetValue(ColorProperty);
+    //        set => SetValue(ColorProperty, value);
+    //    }
+    //}
 }
 
 

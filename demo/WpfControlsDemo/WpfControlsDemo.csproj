@@ -10,6 +10,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\Info16.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Model\" />
   </ItemGroup>
 
@@ -19,6 +23,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\WpfControls\WpfControls.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\Info16.png" />
   </ItemGroup>
 
   <ItemGroup>

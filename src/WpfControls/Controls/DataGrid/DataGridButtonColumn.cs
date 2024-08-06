@@ -7,39 +7,45 @@ public class DataGridButtonColumn : DataGridBoundColumn
         this.IsReadOnly = true;
     }
 
-    public static readonly DependencyProperty CommandProperty =
-           DependencyProperty.Register("Command", typeof(ICommand), typeof(DataGridButtonColumn));
+    public static readonly DependencyProperty TextProperty =
+        DependencyProperty.Register("Text", typeof(string), typeof(DataGridButtonColumn));
 
-    public ICommand Command
+    public string Text
     {
-        get => (ICommand)GetValue(CommandProperty);
-        set => SetValue(CommandProperty, value);
+        get => (string)GetValue(TextProperty);
+        set => SetValue(TextProperty, value);
     }
 
     public static readonly DependencyProperty ContentTemplateProperty =
-           DependencyProperty.Register("ContentTemplate", typeof(DataTemplate), typeof(DataGridButtonColumn));
+        DependencyProperty.Register("ContentTemplate", typeof(DataTemplate), typeof(DataGridButtonColumn));
 
-    private DataTemplate ContentTemplate
+    public DataTemplate ContentTemplate
     {
         get => (DataTemplate)GetValue(ContentTemplateProperty);
         set => SetValue(ContentTemplateProperty, value);
     }
 
+    public BindingBase? CommandBinding { get; set; }
+
     protected override FrameworkElement GenerateElement(DataGridCell cell, object dataItem)
     {
         Button button = new();
-        if (this.ContentTemplate != null)
+        if (this.ContentTemplate is not null)
         {
             button.ContentTemplate = this.ContentTemplate;
         }
-        else
+        else if(this.Text is not null)
         {
-            button.Content = "Edit";
+            button.Content = this.Text;
         }
-
-        if (this.Binding is not null)
+        else if (this.Binding is not null)
         {
-            button.SetBinding(Button.CommandProperty, this.Binding);
+            button.SetBinding(Button.ContentProperty, this.Binding);
+        }
+        
+        if (this.CommandBinding is not null)
+        {
+            button.SetBinding(Button.CommandProperty, this.CommandBinding);
             button.CommandParameter = dataItem;
         }
         return button;

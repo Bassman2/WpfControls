@@ -14,6 +14,13 @@ public partial class ColumnsItemViewModel(string name, string description, Color
     [ObservableProperty]
     private string password = "Demo";
 
+    [RelayCommand]
+    public static void OnItemButton(object parameter)
+    {
+        ColumnsItemViewModel item = (ColumnsItemViewModel)parameter;
+        MessageBox.Show($"VM Item Button pressed for {item.Name}");
+    }
+
 }
 public partial class ColumnsViewModel : ObservableObject
 {
@@ -36,4 +43,11 @@ public partial class ColumnsViewModel : ObservableObject
 
     [ObservableProperty]
     private ListCollectionView items;
+
+    [RelayCommand]
+    public static void OnButton(object parameter)
+    {
+        ColumnsItemViewModel item = (ColumnsItemViewModel)parameter;
+        MessageBox.Show($"VM Button pressed for {item.Name}");
+    }
 }

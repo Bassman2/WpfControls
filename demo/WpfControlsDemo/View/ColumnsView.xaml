@@ -15,9 +15,17 @@
     </UserControl.DataContext>
     <UserControl.Resources>
         <conv:DebugConverter x:Key="debugConverter"/>
+        <ctl:BindingProxy x:Key="proxy" Data="{Binding}"/>
+        <DataTemplate x:Key="buttonColumn">
+            <StackPanel Orientation="Horizontal">
+                <Image Source="/Images/Info16.png" />
+                <TextBlock Text="Edit" Margin="4,0,0,0"/>
+            </StackPanel>
+        </DataTemplate>
     </UserControl.Resources>
     <Grid>
-        <DataGrid 
+        <DataGrid
+            x:Name="dataGrid"
             ItemsSource="{Binding Items}"
             CanUserSortColumns="True"
             AutoGenerateColumns="False"
@@ -28,10 +36,12 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
                 <DataGridTextColumn Header="Description" Binding="{Binding Description}"/>
-                <ctl:DataGridButtonColumn Header="DataGridButtonColumn" ToolTipService.ToolTip="Button" Command="{Binding ButtonCommand}" />
-                <ctl:DataGridColorColumn Header="DataGridColorColumn" Binding="{Binding Color}" />
+                <ctl:DataGridButtonColumn Header="DataGridButtonColumn" Text="Edit" CommandBinding="{Binding ItemButtonCommand}"/>
+                <ctl:DataGridButtonColumn Header="DataGridButtonColumn" Binding="{Binding Name}" CommandBinding="{Binding Data.ButtonCommand, Source={StaticResource proxy}}"/>
+                <ctl:DataGridButtonColumn Header="DataGridButtonColumn" ContentTemplate="{StaticResource buttonColumn}" CommandBinding="{Binding DataContext.ButtonCommand, ElementName=dataGrid}"/>
+                <ctl:DataGridColorColumn Header="DataGridColorColumn" Binding="{Binding Color}"/>
                 <DataGridTextColumn Header="Color" Binding="{Binding Color}"/>
-                <ctl:DataGridPasswordColumn Header="DataGridPasswordColumn" Binding="{Binding Password}" />
+                <ctl:DataGridPasswordColumn Header="DataGridPasswordColumn" Binding="{Binding Password}"/>
                 <DataGridTextColumn Header="Password" Binding="{Binding Password}"/>
             </DataGrid.Columns>
         </DataGrid>

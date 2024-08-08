@@ -98,6 +98,8 @@
 
     <Style TargetType="{x:Type c:DoubleSlider}" BasedOn="{StaticResource NumericSlider}" />
 
+    <Style TargetType="{x:Type c:DecimalSlider}" BasedOn="{StaticResource NumericSlider}" />
+
     <!-- ======================================================================================== -->
     <!--                                                                                          -->
     <!-- ======================================================================================== -->
@@ -181,6 +183,7 @@
 
     <Style TargetType="{x:Type c:DoubleSpin}" BasedOn="{StaticResource NumericSpin}" />
 
+    <Style TargetType="{x:Type c:DecimalSpin}" BasedOn="{StaticResource NumericSpin}" />
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <!-- ToggleSwitch                                  -->

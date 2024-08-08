@@ -1,4 +1,8 @@
-﻿namespace WpfControls.Controls;
+﻿using System.Globalization;
+
+namespace WpfControls.Controls;
+
+// https://www.codeproject.com/Articles/315461/A-WPF-Spinner-Custom-Control
 
 // used for themes selection
 public abstract class NumericSlider<T> : NumericBase<T> where T : IFormattable
@@ -74,7 +78,10 @@ public abstract class NumericBase<T> : Control where T : IFormattable
     #region CultureInfo
 
     public static readonly DependencyProperty CultureInfoProperty =
-        DependencyProperty.Register("CultureInfo", typeof(CultureInfo), typeof(NumericBase<T>), new UIPropertyMetadata(CultureInfo.CurrentCulture, OnCultureInfoChanged));
+        DependencyProperty.Register("CultureInfo", typeof(CultureInfo), typeof(NumericBase<T>), new UIPropertyMetadata(CultureInfo.CurrentCulture,
+            (o, e) => ((NumericSlider<T>)o).OnCultureInfoChanged((CultureInfo)e.OldValue, (CultureInfo)e.NewValue)
+            //OnCultureInfoChanged
+            ));
 
     public CultureInfo CultureInfo
     {
@@ -82,13 +89,13 @@ public abstract class NumericBase<T> : Control where T : IFormattable
         set => SetValue(CultureInfoProperty, value);
     }
 
-    private static void OnCultureInfoChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
-    {
-        if (o is NumericBase<T> numericSlider)
-        {
-            numericSlider.OnCultureInfoChanged((CultureInfo)e.OldValue, (CultureInfo)e.NewValue);
-        }
-    }
+    //private static void OnCultureInfoChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
+    //{
+    //    if (o is NumericBase<T> numericSlider)
+    //    {
+    //        numericSlider.OnCultureInfoChanged((CultureInfo)e.OldValue, (CultureInfo)e.NewValue);
+    //    }
+    //}
 
     protected virtual void OnCultureInfoChanged(CultureInfo oldValue, CultureInfo newValue)
     {
@@ -100,7 +107,10 @@ public abstract class NumericBase<T> : Control where T : IFormattable
     #region StringFormat
 
     public static readonly DependencyProperty StringFormatProperty = DependencyProperty.Register("StringFormat", typeof(string), typeof(NumericBase<T>), 
-        new UIPropertyMetadata(String.Empty, OnStringFormatChanged));
+        new UIPropertyMetadata(String.Empty,
+            (o, e) => ((NumericBase<T>)o).OnStringFormatChanged((string)e.OldValue, (string)e.NewValue)
+            //OnStringFormatChanged
+            ));
 
     public string StringFormat
     {
@@ -108,7 +118,7 @@ public abstract class NumericBase<T> : Control where T : IFormattable
         set => SetValue(StringFormatProperty, value);
     }
 
-    private static void OnStringFormatChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) => ((NumericBase<T>)o).OnStringFormatChanged((string)e.OldValue, (string)e.NewValue); 
+    //private static void OnStringFormatChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) => ((NumericBase<T>)o).OnStringFormatChanged((string)e.OldValue, (string)e.NewValue); 
 
 #pragma warning disable IDE0060 // Remove unused parameter
     private void OnStringFormatChanged(string oldValue, string newValue)
@@ -123,7 +133,10 @@ public abstract class NumericBase<T> : Control where T : IFormattable
 
     public static readonly DependencyProperty TextProperty =
         DependencyProperty.Register("Text", typeof(string), typeof(NumericBase<T>), 
-            new FrameworkPropertyMetadata(default(String), FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnTextChanged, null, false, UpdateSourceTrigger.LostFocus));
+            new FrameworkPropertyMetadata(default(String), FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
+                (o, e) => ((NumericBase<T>)o).OnTextChanged((string)e.OldValue, (string)e.NewValue),
+                //OnTextChanged, 
+                null, false, UpdateSourceTrigger.LostFocus));
 
     public string Text
     {
@@ -131,7 +144,7 @@ public abstract class NumericBase<T> : Control where T : IFormattable
         set => SetValue(TextProperty, value);
     }
 
-    private static void OnTextChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) => ((NumericBase<T>)o).OnTextChanged((string)e.OldValue, (string)e.NewValue);
+    //private static void OnTextChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) => ((NumericBase<T>)o).OnTextChanged((string)e.OldValue, (string)e.NewValue);
 
     protected virtual void OnTextChanged(string oldValue, string newValue)
     {
@@ -143,7 +156,9 @@ public abstract class NumericBase<T> : Control where T : IFormattable
     #region Increment
 
     public static readonly DependencyProperty IncrementProperty =
-        DependencyProperty.Register("Increment", typeof(T), typeof(NumericBase<T>), new PropertyMetadata(default(T), OnIncrementChanged, OnCoerceIncrement));
+        DependencyProperty.Register("Increment", typeof(T), typeof(NumericBase<T>), new PropertyMetadata(default(T),
+            (d, e) => ((NumericBase<T>)d).OnIncrementChanged((T)e.OldValue, (T)e.NewValue),
+            (d, b) => ((NumericBase<T>)d).OnCoerceIncrement((T)b)));
 
     public T Increment
     {
@@ -151,24 +166,12 @@ public abstract class NumericBase<T> : Control where T : IFormattable
         set => SetValue(IncrementProperty, value);
     }
 
-    private static void OnIncrementChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) => ((NumericBase<T>)o).OnIncrementChanged((T)e.OldValue, (T)e.NewValue);
-    
-
     protected virtual void OnIncrementChanged(T oldValue, T newValue)
     {
         if (this.IsInitialized)
         {
             //SetValidSpinDirection();
         }
-    }
-
-    private static object? OnCoerceIncrement(DependencyObject d, object baseValue)
-    {
-        if (d is NumericBase<T> numericUpDown)
-        {
-            return numericUpDown!.OnCoerceIncrement((T)baseValue);
-        }
-        return baseValue;
     }
 
     protected virtual T OnCoerceIncrement(T baseValue)
@@ -181,7 +184,10 @@ public abstract class NumericBase<T> : Control where T : IFormattable
     #region Maximum
 
     public static readonly DependencyProperty MaximumProperty =
-        DependencyProperty.Register("Maximum", typeof(T), typeof(NumericBase<T>), new UIPropertyMetadata(default(T), OnMaximumChanged, OnCoerceMaximum));
+        DependencyProperty.Register("Maximum", typeof(T), typeof(NumericBase<T>), new UIPropertyMetadata(default(T),
+            (o, e) => ((NumericBase<T>)o).OnMaximumChanged((T)e.OldValue, (T)e.NewValue),
+            (o, b) => ((NumericBase<T>)o).OnCoerceMaximum((T)b))); 
+            //OnMaximumChanged, OnCoerceMaximum));
 
     public T Maximum
     {
@@ -189,7 +195,7 @@ public abstract class NumericBase<T> : Control where T : IFormattable
         set => SetValue(MaximumProperty, value);
     }
 
-    private static void OnMaximumChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) => ((NumericBase<T>)o).OnMaximumChanged((T)e.OldValue, (T)e.NewValue);
+    //private static void OnMaximumChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) => ((NumericBase<T>)o).OnMaximumChanged((T)e.OldValue, (T)e.NewValue);
     
 
     protected virtual void OnMaximumChanged(T oldValue, T newValue)
@@ -200,14 +206,14 @@ public abstract class NumericBase<T> : Control where T : IFormattable
         }
     }
 
-    private static object? OnCoerceMaximum(DependencyObject d, object baseValue)
-    {
-        if (d is NumericBase<T> upDown)
-        {
-            return upDown.OnCoerceMaximum((T)baseValue);
-        }
-        return baseValue;
-    }
+    //private static object? OnCoerceMaximum(DependencyObject d, object baseValue)
+    //{
+    //    if (d is NumericBase<T> upDown)
+    //    {
+    //        return upDown.OnCoerceMaximum((T)baseValue);
+    //    }
+    //    return baseValue;
+    //}
 
     protected virtual T OnCoerceMaximum(T baseValue)
     {
@@ -219,7 +225,10 @@ public abstract class NumericBase<T> : Control where T : IFormattable
     #region Minimum
 
     public static readonly DependencyProperty MinimumProperty =
-        DependencyProperty.Register("Minimum", typeof(T), typeof(NumericBase<T>), new UIPropertyMetadata(default(T), OnMinimumChanged, OnCoerceMinimum));
+        DependencyProperty.Register("Minimum", typeof(T), typeof(NumericBase<T>), new UIPropertyMetadata(default(T),
+            (d, e) => ((NumericBase<T>)d).OnMinimumChanged((T)e.OldValue, (T)e.NewValue),
+            (d, b) => ((NumericBase<T>)d).OnCoerceMinimum((T)b))); 
+        //OnMinimumChanged, OnCoerceMinimum));
 
     public T Minimum
     {
@@ -227,7 +236,7 @@ public abstract class NumericBase<T> : Control where T : IFormattable
         set => SetValue(MinimumProperty, value);
     }
 
-    private static void OnMinimumChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) => ((NumericBase<T>)o).OnMinimumChanged((T)e.OldValue, (T)e.NewValue);
+    //private static void OnMinimumChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) => ((NumericBase<T>)o).OnMinimumChanged((T)e.OldValue, (T)e.NewValue);
     
     protected virtual void OnMinimumChanged(T oldValue, T newValue)
     {
@@ -237,13 +246,13 @@ public abstract class NumericBase<T> : Control where T : IFormattable
         }
     }
 
-    private static object OnCoerceMinimum(DependencyObject d, object baseValue)
-    {
-        if (d is NumericBase<T> upDown)
-            return upDown!.OnCoerceMinimum((T)baseValue)!;
+    //private static object OnCoerceMinimum(DependencyObject d, object baseValue)
+    //{
+    //    if (d is NumericBase<T> upDown)
+    //        return upDown!.OnCoerceMinimum((T)baseValue)!;
 
-        return baseValue;
-    }
+    //    return baseValue;
+    //}
 
     protected virtual T OnCoerceMinimum(T baseValue)
     {
@@ -256,7 +265,11 @@ public abstract class NumericBase<T> : Control where T : IFormattable
 
     public static readonly DependencyProperty ValueProperty =
         DependencyProperty.Register("Value", typeof(T?), typeof(NumericBase<T>), 
-            new FrameworkPropertyMetadata(default(T?), FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnValueChanged, OnCoerceValue, false, UpdateSourceTrigger.PropertyChanged));
+            new FrameworkPropertyMetadata(default(T?), FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
+                (d, e) => ((NumericBase<T>)d).OnValueChanged((T)e.OldValue, (T)e.NewValue),
+                (d, b) => ((NumericBase<T>)d).OnCoerceValue((T)b),
+                //OnValueChanged, OnCoerceValue, 
+                false, UpdateSourceTrigger.PropertyChanged));
 
     public T? Value
     {
@@ -264,7 +277,7 @@ public abstract class NumericBase<T> : Control where T : IFormattable
         set => SetValue(ValueProperty, value);
     }
 
-    private static object OnCoerceValue(DependencyObject o, object basevalue) => ((NumericBase<T>)o).OnCoerceValue(basevalue);
+    //private static object OnCoerceValue(DependencyObject o, object basevalue) => ((NumericBase<T>)o).OnCoerceValue(basevalue);
     
     protected virtual object OnCoerceValue(object newValue)
     {
@@ -278,7 +291,7 @@ public abstract class NumericBase<T> : Control where T : IFormattable
         return value;
     }
 
-    private static void OnValueChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) => ((NumericBase<T>)o).OnValueChanged((T?)e.OldValue, (T?)e.NewValue);
+    //private static void OnValueChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) => ((NumericBase<T>)o).OnValueChanged((T?)e.OldValue, (T?)e.NewValue);
     
     protected virtual void OnValueChanged(T? oldValue, T? newValue)
     {
@@ -297,14 +310,8 @@ public abstract class NumericBase<T> : Control where T : IFormattable
 
     public T TickFrequency
     {
-        get
-        {
-            return (T)GetValue(TickFrequencyProperty);
-        }
-        set
-        {
-            SetValue(TickFrequencyProperty, value);
-        }
+        get => (T)GetValue(TickFrequencyProperty);
+        set => SetValue(TickFrequencyProperty, value);
     }
 
     public static readonly DependencyProperty TickPlacementProperty =
@@ -312,14 +319,8 @@ public abstract class NumericBase<T> : Control where T : IFormattable
 
     public TickPlacement TickPlacement
     {
-        get
-        {
-            return (TickPlacement)GetValue(TickPlacementProperty);
-        }
-        set
-        {
-            SetValue(TickPlacementProperty, value);
-        }
+        get => (TickPlacement)GetValue(TickPlacementProperty);
+        set => SetValue(TickPlacementProperty, value);
     }
 
     public static readonly DependencyProperty SliderWidthProperty =
@@ -327,14 +328,8 @@ public abstract class NumericBase<T> : Control where T : IFormattable
 
     public double SliderWidth
     {
-        get
-        {
-            return (double)GetValue(SliderWidthProperty);
-        }
-        set
-        {
-            SetValue(SliderWidthProperty, value);
-        }
+        get => (double)GetValue(SliderWidthProperty);
+        set => SetValue(SliderWidthProperty, value);
     }
 
     public static readonly DependencyProperty TextWidthProperty =
@@ -342,13 +337,7 @@ public abstract class NumericBase<T> : Control where T : IFormattable
 
     public double TextWidth
     {
-        get
-        {
-            return (double)GetValue(TextWidthProperty);
-        }
-        set
-        {
-            SetValue(TextWidthProperty, value);
-        }
+        get => (double)GetValue(TextWidthProperty);
+        set => SetValue(TextWidthProperty, value);
     }
 }

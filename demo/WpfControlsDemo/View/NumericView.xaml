@@ -5,12 +5,20 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WpfControlsDemo.View"
              xmlns:ctl="clr-namespace:WpfControls.Controls;assembly=WpfControls"
+             xmlns:vm="clr-namespace:WpfControlsDemo.ViewModel"
+             d:DataContext="{d:DesignInstance Type=vm:NumericViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.DataContext>
+        <vm:NumericViewModel/>
+    </UserControl.DataContext>
     <Grid Margin="8">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="120"/>
+            <ColumnDefinition Width="140"/>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="360"/>
+            <ColumnDefinition Width="100"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -18,13 +26,29 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Label Grid.Row="0" Grid.Column="0" Content="IntegerSlider"/>
-        <ctl:IntegerSlider Grid.Row="0" Grid.Column="1" Increment="5" Minimum="1" Maximum="100" Value="{Binding IntegerSliderValue}"/>
-        <Label Grid.Row="1" Grid.Column="0" Content="DoubleSlider"/>
-        <ctl:DoubleSlider Grid.Row="1" Grid.Column="1" Value="{Binding DoubleSliderValue}"  Increment="0.5" Minimum="1.0" Maximum="100.0"/>
-        <Label Grid.Row="2" Grid.Column="0" Content="IntegerSpin"/>
-        <ctl:IntegerSpin Grid.Row="2" Grid.Column="1" Value="{Binding IntegerSpinValue}" Increment="5" Minimum="1" Maximum="100"/>
-        <Label Grid.Row="3" Grid.Column="0" Content="DoubleSpin"/>
-        <ctl:DoubleSpin Grid.Row="3" Grid.Column="1" Value="{Binding DoubleSpinValue}" Increment="0.5" Minimum="1.0" Maximum="100.0"/>
+
+        <Label Grid.Row="0" Grid.Column="1" Content="Spin"/>
+        <Label Grid.Row="0" Grid.Column="3" Content="Slider"/>
+
+        <Label Grid.Row="1" Grid.Column="0" Content="Integer"/>
+        <Label Grid.Row="2" Grid.Column="0" Content="Double"/>
+        <Label Grid.Row="3" Grid.Column="0" Content="Decimal"/>
+
+        <ctl:IntegerSpin Grid.Row="1" Grid.Column="1" Value="{Binding SpinIntValue}" StringFormat="D" Increment="5" Minimum="1" Maximum="100"/>
+        <ctl:DoubleSpin Grid.Row="2" Grid.Column="1" Value="{Binding SpinDoubleValue}" StringFormat="N2" Increment="0.5" Minimum="1.0" Maximum="100.0"/>
+        <ctl:DecimalSpin Grid.Row="3" Grid.Column="1" Value="{Binding SpinDecimalValue}" StringFormat="N3" Increment="0.5" Minimum="1.0" Maximum="100.0"/>
+
+        <TextBox Grid.Row="1" Grid.Column="2" Text="{Binding SpinIntValue, StringFormat={}{0:D}}" Margin="3" IsReadOnly="True"/>
+        <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding SpinDoubleValue, StringFormat={}{0:N2}}" Margin="3" IsReadOnly="True"/>
+        <TextBox Grid.Row="3" Grid.Column="2" Text="{Binding SpinDecimalValue, StringFormat={}{0:N3}}" Margin="3" IsReadOnly="True"/>
+
+        <ctl:IntegerSlider Grid.Row="1" Grid.Column="3" Value="{Binding SliderIntValue}" StringFormat="D" Increment="5" Minimum="1" Maximum="100" />
+        <ctl:DoubleSlider Grid.Row="2" Grid.Column="3" Value="{Binding SliderDoubleValue}" StringFormat="N2" Increment="0.5" Minimum="1.0" Maximum="100.0"/>
+        <ctl:DecimalSlider Grid.Row="3" Grid.Column="3" Value="{Binding SliderDecimalValue}" StringFormat="N3" Increment="0.5" Minimum="1.0" Maximum="100.0"/>
+
+        <TextBox Grid.Row="1" Grid.Column="4" Text="{Binding SliderIntValue, StringFormat={}{0:D}}" Margin="3" IsReadOnly="True"/>
+        <TextBox Grid.Row="2" Grid.Column="5" Text="{Binding SliderDoubleValue, StringFormat={}{0:N2}}" Margin="3" IsReadOnly="True"/>
+        <TextBox Grid.Row="3" Grid.Column="6" Text="{Binding SliderDecimalValue, StringFormat={}{0:N3}}" Margin="3" IsReadOnly="True"/>
+
     </Grid>
 </UserControl>

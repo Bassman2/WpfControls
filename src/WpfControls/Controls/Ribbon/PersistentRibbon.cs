@@ -97,7 +97,7 @@ public class PersistentRibbon : Ribbon
         }
     }
 
-    private bool IsLeaf(object element)
+    private static bool IsLeaf(object element)
     {
         if ((element is RibbonButton) ||
         (element is RibbonToggleButton) ||
@@ -119,7 +119,7 @@ public class PersistentRibbon : Ribbon
         return false;
     }
 
-    private bool SaveQatItemsIfMatchesControl(List<QatItem> remainingItems, object control)
+    private static bool SaveQatItemsIfMatchesControl(List<QatItem> remainingItems, object control)
     {
         bool matched = false;
         if (control is FrameworkElement element)
@@ -225,7 +225,7 @@ public class PersistentRibbon : Ribbon
         }
     }
 
-    private void LoadQatItemsAmongChildren(List<QatItem> previouslyMatchedItems, int matchLevel, int controlIndex, object parent, ref int remainingItemsCount)
+    private static void LoadQatItemsAmongChildren(List<QatItem> previouslyMatchedItems, int matchLevel, int controlIndex, object parent, ref int remainingItemsCount)
     {
         if (previouslyMatchedItems.Count == 0)
         {
@@ -277,7 +277,7 @@ public class PersistentRibbon : Ribbon
         }
     }
 
-    private void LoadQatItemIfMatchesControl(List<QatItem> previouslyMatchedItems, List<QatItem> matchedItems, int matchLevel, int controlIndex, object control, ref int remainingItemsCount)
+    private static void LoadQatItemIfMatchesControl(List<QatItem> previouslyMatchedItems, List<QatItem> matchedItems, int matchLevel, int controlIndex, object control, ref int remainingItemsCount)
     {
         for (int qatIndex = 0; qatIndex < previouslyMatchedItems.Count; qatIndex++)
         {

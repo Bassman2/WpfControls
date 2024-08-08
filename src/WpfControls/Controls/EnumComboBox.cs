@@ -4,29 +4,7 @@ public class EnumComboBox : ComboBox
 {
     public EnumComboBox()
     {
-        //DisplayMemberPath = "Description";
         SelectedValuePath = "Value";
-
-        //var template = new DataTemplate() { DataType = typeof(string) };
-        //var dockPanel = new FrameworkElementFactory(typeof(DockPanel));
-        //dockPanel.SetValue(DockPanel.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
-
-        //var image = new FrameworkElementFactory(typeof(Image));
-        //image.SetBinding(Image.SourceProperty, new Binding("Image"));
-        //image.SetValue(Image.WidthProperty, 16.0);
-        //image.SetValue(Image.HeightProperty, 16.0);
-        //image.SetValue(Image.MarginProperty, new Thickness(0, 0, 4.0, 0.0));
-
-        //var textBlock = new FrameworkElementFactory(typeof(TextBlock));
-        //textBlock.SetBinding(TextBlock.TextProperty, new Binding("Description"));
-        //textBlock.SetValue(TextBlock.VerticalAlignmentProperty, VerticalAlignment.Center);
-        //textBlock.SetValue(TextBlock.BackgroundProperty, Brushes.Yellow);
-
-        //dockPanel.AppendChild(image);
-        //dockPanel.AppendChild(textBlock);
-        //template.VisualTree = dockPanel;
-
-        //this.ItemTemplate = template;
     }
 
     public static readonly DependencyProperty EnumTypeProperty =

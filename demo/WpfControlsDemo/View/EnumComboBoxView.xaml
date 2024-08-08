@@ -23,20 +23,38 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Label Grid.Column="0" Grid.Row="0" Content="Enum Name"/>
         <ctl:EnumComboBox Grid.Column="1" Grid.Row="0" SelectedValue="{Binding SelectedEnumName}" EnumType="{x:Type vm:EnumName}" Margin="3"/>
         <TextBox Grid.Column="2" Grid.Row="0" Text="{Binding SelectedEnumName}" Margin="3" IsReadOnly="True"/>
         <TextBox Grid.Column="3" Grid.Row="0" Text="{Binding SelectedEnumName}" Margin="3" IsReadOnly="True"/>
 
-        <Label Grid.Column="0" Grid.Row="1" Content="Description"/>
-        <ctl:EnumComboBox Grid.Column="1" Grid.Row="1" SelectedValue="{Binding SelectedEnumDesc}" EnumType="{x:Type vm:EnumDesc}" Margin="3"/>
-        <TextBox Grid.Column="2" Grid.Row="1" Text="{Binding SelectedEnumDesc}" Margin="3" IsReadOnly="True"/>
-        <TextBox Grid.Column="3" Grid.Row="1" Text="{Binding SelectedEnumDesc, Converter={StaticResource descriptionConverter}}" Margin="3" IsReadOnly="True"/>
+        <Label Grid.Column="0" Grid.Row="1" Content="Enum Name + Image"/>
+        <ctl:EnumComboBox Grid.Column="1" Grid.Row="1" SelectedValue="{Binding SelectedEnumNameImage}" EnumType="{x:Type vm:EnumNameImage}" Margin="3"/>
+        <TextBox Grid.Column="2" Grid.Row="1" Text="{Binding SelectedEnumNameImage}" Margin="3" IsReadOnly="True"/>
+        <TextBox Grid.Column="3" Grid.Row="1" Text="{Binding SelectedEnumNameImage}" Margin="3" IsReadOnly="True"/>
 
-        <Label Grid.Column="0" Grid.Row="2" Content="Resource"/>
-        <ctl:EnumComboBox Grid.Column="1" Grid.Row="2" SelectedValue="{Binding SelectedEnumResc}" EnumType="{x:Type vm:EnumResc}" Margin="3"/>
-        <TextBox Grid.Column="2" Grid.Row="2" Text="{Binding SelectedEnumResc}" Margin="3" IsReadOnly="True"/>
-        <TextBox Grid.Column="3" Grid.Row="2" Text="{Binding SelectedEnumResc, Converter={StaticResource resourceConverter}}" Margin="3" IsReadOnly="True"/>
+        <Label Grid.Column="0" Grid.Row="2" Content="Description"/>
+        <ctl:EnumComboBox Grid.Column="1" Grid.Row="2" SelectedValue="{Binding SelectedEnumDesc}" EnumType="{x:Type vm:EnumDesc}" Margin="3"/>
+        <TextBox Grid.Column="2" Grid.Row="2" Text="{Binding SelectedEnumDesc}" Margin="3" IsReadOnly="True"/>
+        <TextBox Grid.Column="3" Grid.Row="2" Text="{Binding SelectedEnumDesc, Converter={StaticResource descriptionConverter}}" Margin="3" IsReadOnly="True"/>
+
+        <Label Grid.Column="0" Grid.Row="3" Content="Description + Image"/>
+        <ctl:EnumComboBox Grid.Column="1" Grid.Row="3" SelectedValue="{Binding SelectedEnumDescImage}" EnumType="{x:Type vm:EnumDescImage}" Margin="3"/>
+        <TextBox Grid.Column="2" Grid.Row="3" Text="{Binding SelectedEnumDescImage}" Margin="3" IsReadOnly="True"/>
+        <TextBox Grid.Column="3" Grid.Row="3" Text="{Binding SelectedEnumDescImage, Converter={StaticResource descriptionConverter}}" Margin="3" IsReadOnly="True"/>
+
+        <Label Grid.Column="0" Grid.Row="4" Content="Resource"/>
+        <ctl:EnumComboBox Grid.Column="1" Grid.Row="4" SelectedValue="{Binding SelectedEnumResc}" EnumType="{x:Type vm:EnumResc}" Margin="3"/>
+        <TextBox Grid.Column="2" Grid.Row="4" Text="{Binding SelectedEnumResc}" Margin="3" IsReadOnly="True"/>
+        <TextBox Grid.Column="3" Grid.Row="4" Text="{Binding SelectedEnumResc, Converter={StaticResource resourceConverter}}" Margin="3" IsReadOnly="True"/>
+
+        <Label Grid.Column="0" Grid.Row="5" Content="Resource + Image"/>
+        <ctl:EnumComboBox Grid.Column="1" Grid.Row="5" SelectedValue="{Binding SelectedEnumRescImage}" EnumType="{x:Type vm:EnumRescImage}" Margin="3"/>
+        <TextBox Grid.Column="2" Grid.Row="5" Text="{Binding SelectedEnumRescImage}" Margin="3" IsReadOnly="True"/>
+        <TextBox Grid.Column="3" Grid.Row="5" Text="{Binding SelectedEnumRescImage, Converter={StaticResource resourceConverter}}" Margin="3" IsReadOnly="True"/>
     </Grid>
 </UserControl>

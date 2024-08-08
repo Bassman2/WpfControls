@@ -10,7 +10,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\Blue.png" />
+    <None Remove="Images\Grey.png" />
+    <None Remove="Images\health-00to19.png" />
+    <None Remove="Images\health-20to39.png" />
+    <None Remove="Images\health-40to59.png" />
+    <None Remove="Images\health-60to79.png" />
+    <None Remove="Images\health-80plus.png" />
     <None Remove="Images\Info16.png" />
+    <None Remove="Images\Red.png" />
+    <None Remove="Images\Yellow.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,7 +35,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Images\Blue.png" />
+    <Resource Include="Images\Grey.png" />
+    <Resource Include="Images\health-00to19.png" />
+    <Resource Include="Images\health-20to39.png" />
+    <Resource Include="Images\health-40to59.png" />
+    <Resource Include="Images\health-60to79.png" />
+    <Resource Include="Images\health-80plus.png" />
     <Resource Include="Images\Info16.png" />
+    <Resource Include="Images\Red.png" />
+    <Resource Include="Images\Yellow.png" />
   </ItemGroup>
 
   <ItemGroup>

@@ -28,7 +28,6 @@
         </Grid.RowDefinitions>
 
         <Label Grid.Row="0" Grid.Column="0" Content="ToggleSwitch"/>
-
-        <ctl:ToggleSwitch Grid.Row="0" Grid.Column="1" Content="Test" />
+        <ctl:ToggleSwitch Grid.Row="0" Grid.Column="1" Content="Test" Margin="3" />
     </Grid>
 </UserControl>

@@ -122,7 +122,8 @@
     </DataTemplate>
     
     <DataTemplate x:Key="IncreaseGlyphDisabledKeyX">
-        <Path	Width="9"
+        <Path
+            Width="9"
             Height="5"
             Data="{StaticResource UpArrowGeometry}"
             Fill="{StaticResource GlyphDisabledForegroundKey}"

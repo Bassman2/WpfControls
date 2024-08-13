@@ -68,11 +68,11 @@
                         <ControlTemplate TargetType="{x:Type ButtonBase}">
                             <Border Background="{TemplateBinding Background}">
                                 <ContentPresenter
-                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
-                        Margin="{TemplateBinding Padding}" 
-                        RecognizesAccessKey="True" 
-                        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                    Margin="{TemplateBinding Padding}" 
+                                    RecognizesAccessKey="True" 
+                                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
                             </Border>
                         </ControlTemplate>
                     </Setter.Value>
@@ -106,10 +106,82 @@
         </Setter>
     </Style>
 
-    <Style TargetType="{x:Type c:IntegerSpin}" BasedOn="{StaticResource NumericSpin}" />
 
-    <Style TargetType="{x:Type c:DoubleSpin}" BasedOn="{StaticResource NumericSpin}" />
+    <DrawingBrush x:Key="brush.scroll.down" Stretch="Uniform">
+        <DrawingBrush.Drawing>
+            <DrawingGroup>
+                <DrawingGroup.Children>
+                    <GeometryDrawing Brush="#FF000000" Geometry="F1 M 24,26.75L 14,16.75L 14,23.5L 24,34L 34,23.5L 34,16.75L 24,26.75 Z " />
+                </DrawingGroup.Children>
+            </DrawingGroup>
+        </DrawingBrush.Drawing>
+    </DrawingBrush>
 
-    <Style TargetType="{x:Type c:DecimalSpin}" BasedOn="{StaticResource NumericSpin}" />
+    <DrawingBrush x:Key="brush.scroll.up" Stretch="Uniform">
+        <DrawingBrush.Drawing>
+            <DrawingGroup>
+                <DrawingGroup.Children>
+                    <GeometryDrawing Brush="#FF000000" Geometry="F1 M 24,21.25L 34,31.25L 34,24.5L 24,14L 14,24.5L 14,31.25L 24,21.25 Z " />
+                </DrawingGroup.Children>
+            </DrawingGroup>
+        </DrawingBrush.Drawing>
+    </DrawingBrush>
+
+
+    <Style x:Key="NumericSpinX" TargetType="{x:Type Control}">
+        <Setter Property="Background" Value="Yellow"/>
+        <Setter Property="BorderBrush" Value="Black"/>
+        <Setter Property="BorderThickness" Value="0.8"/>
+        <Setter Property="Height" Value="18.0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Control">
+                    
+                        <!--<StackPanel Orientation="Horizontal">
+                            <TextBox 
+                             Text="{Binding Text, RelativeSource={RelativeSource TemplatedParent}}"                            
+                             Width="{Binding TextWidth, RelativeSource={RelativeSource TemplatedParent}}"                                
+                             HorizontalAlignment="Stretch" /> 
+                            <StackPanel Orientation="Vertical">
+                                <RepeatButton x:Name="incRepeatButton" Style="{StaticResource IncDecRepeatButton}" ContentTemplate="{StaticResource IncreaseGlyphNormalKeyX}" Width="20"/>
+                                <RepeatButton x:Name="decRepeatButton" Style="{StaticResource IncDecRepeatButton}" ContentTemplate="{StaticResource DecreaseGlyphNormalKeyX}" Width="20"/>
+                            </StackPanel>
+                        </StackPanel>-->
+                    <Grid Background="{Binding Path=Background, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <TextBox Grid.Row="0" Grid.Column="0" Text="{Binding Text, RelativeSource={RelativeSource TemplatedParent}}" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                        <Grid x:Name="grid1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Grid.RowDefinitions>
+                               <RowDefinition Height="Auto" />
+                               <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <RepeatButton x:Name="incRepeatButton" Grid.Row="0" Grid.Column="1" Width="22" Height="9">
+                                <RepeatButton.Content>
+                                    <Rectangle Width="16" Height="5" Fill="{StaticResource brush.scroll.up}" />
+                                </RepeatButton.Content>
+                            </RepeatButton>
+                            <RepeatButton x:Name="decRepeatButton" Grid.Row="1" Grid.Column="1" Width="22" Height="9">
+                                <RepeatButton.Content>
+                                    <Rectangle Width="16" Height="5" Fill="{StaticResource brush.scroll.down}" />
+                                </RepeatButton.Content>
+                            </RepeatButton>
+                        </Grid>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type c:IntegerSpin}" BasedOn="{StaticResource NumericSpinX}" />
+
+    <Style TargetType="{x:Type c:DoubleSpin}" BasedOn="{StaticResource NumericSpinX}" />
+
+    <Style TargetType="{x:Type c:DecimalSpin}" BasedOn="{StaticResource NumericSpinX}" />
     
 </ResourceDictionary>

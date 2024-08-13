@@ -4,6 +4,7 @@
     xmlns:options="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
     xmlns:c="clr-namespace:WpfControls.Controls">
 
+    <!--
     <Geometry x:Key="UpArrowGeometry">M0,5 L4.5,.5 9,5 6,5 4.5,3.5 3,5 z</Geometry>
     <Geometry x:Key="DownArrowGeometry">M0,0 L3,0 4.5,1.5 6,0 9,0 4.5,4.5 z</Geometry>
 
@@ -105,9 +106,9 @@
             </Setter.Value>
         </Setter>
     </Style>
+    -->
 
-
-    <DrawingBrush x:Key="brush.scroll.down" Stretch="Uniform">
+    <DrawingBrush x:Key="brushScrollDown" Stretch="Uniform">
         <DrawingBrush.Drawing>
             <DrawingGroup>
                 <DrawingGroup.Children>
@@ -117,7 +118,7 @@
         </DrawingBrush.Drawing>
     </DrawingBrush>
 
-    <DrawingBrush x:Key="brush.scroll.up" Stretch="Uniform">
+    <DrawingBrush x:Key="brushScrollUp" Stretch="Uniform">
         <DrawingBrush.Drawing>
             <DrawingGroup>
                 <DrawingGroup.Children>
@@ -129,24 +130,12 @@
 
 
     <Style x:Key="NumericSpinX" TargetType="{x:Type Control}">
-        <Setter Property="Background" Value="Yellow"/>
         <Setter Property="BorderBrush" Value="Black"/>
         <Setter Property="BorderThickness" Value="0.8"/>
         <Setter Property="Height" Value="18.0"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Control">
-                    
-                        <!--<StackPanel Orientation="Horizontal">
-                            <TextBox 
-                             Text="{Binding Text, RelativeSource={RelativeSource TemplatedParent}}"                            
-                             Width="{Binding TextWidth, RelativeSource={RelativeSource TemplatedParent}}"                                
-                             HorizontalAlignment="Stretch" /> 
-                            <StackPanel Orientation="Vertical">
-                                <RepeatButton x:Name="incRepeatButton" Style="{StaticResource IncDecRepeatButton}" ContentTemplate="{StaticResource IncreaseGlyphNormalKeyX}" Width="20"/>
-                                <RepeatButton x:Name="decRepeatButton" Style="{StaticResource IncDecRepeatButton}" ContentTemplate="{StaticResource DecreaseGlyphNormalKeyX}" Width="20"/>
-                            </StackPanel>
-                        </StackPanel>-->
                     <Grid Background="{Binding Path=Background, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -155,21 +144,17 @@
                         <Grid.RowDefinitions>
                             <RowDefinition />
                         </Grid.RowDefinitions>
-                        <TextBox Grid.Row="0" Grid.Column="0" Text="{Binding Text, RelativeSource={RelativeSource TemplatedParent}}" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                        <TextBox Grid.Row="0" Grid.Column="0" Text="{Binding Text, RelativeSource={RelativeSource TemplatedParent}}" HorizontalAlignment="Stretch" VerticalAlignment="Center" IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource TemplatedParent}}"/>
                         <Grid x:Name="grid1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
                             <Grid.RowDefinitions>
                                <RowDefinition Height="Auto" />
                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <RepeatButton x:Name="incRepeatButton" Grid.Row="0" Grid.Column="1" Width="22" Height="9">
-                                <RepeatButton.Content>
-                                    <Rectangle Width="16" Height="5" Fill="{StaticResource brush.scroll.up}" />
-                                </RepeatButton.Content>
+                                <Rectangle Width="16" Height="5" Fill="{StaticResource brushScrollUp}" />
                             </RepeatButton>
                             <RepeatButton x:Name="decRepeatButton" Grid.Row="1" Grid.Column="1" Width="22" Height="9">
-                                <RepeatButton.Content>
-                                    <Rectangle Width="16" Height="5" Fill="{StaticResource brush.scroll.down}" />
-                                </RepeatButton.Content>
+                                <Rectangle Width="16" Height="5" Fill="{StaticResource brushScrollDown}" />
                             </RepeatButton>
                         </Grid>
                     </Grid>

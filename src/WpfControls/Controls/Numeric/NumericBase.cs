@@ -104,6 +104,8 @@ public abstract class NumericBase<T> : Control where T : IFormattable
 
     #endregion //CultureInfo
 
+
+
     #region StringFormat
 
     public static readonly DependencyProperty StringFormatProperty = DependencyProperty.Register("StringFormat", typeof(string), typeof(NumericBase<T>), 
@@ -125,6 +127,19 @@ public abstract class NumericBase<T> : Control where T : IFormattable
 #pragma warning restore IDE0060 // Remove unused parameter
     {
         this.Text = ValueToString();
+    }
+
+    #endregion
+
+    #region IsReadOnly
+
+    public static readonly DependencyProperty IsReadOnlyProperty =
+       DependencyProperty.Register("IsReadOnly", typeof(bool), typeof(NumericBase<T>), new PropertyMetadata(false));
+
+    public bool IsReadOnly
+    {
+        get => (bool)GetValue(IsReadOnlyProperty);
+        set => SetValue(IsReadOnlyProperty, value);
     }
 
     #endregion

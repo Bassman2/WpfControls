@@ -70,6 +70,28 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Control">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <RepeatButton x:Name="decRepeatButton" Grid.Column="0" Style="{StaticResource IncDecRepeatButton}" ContentTemplate="{StaticResource DecreaseGlyphNormalKey}"/>
+                        <Slider Grid.Column="1" Margin="2,0,2,0" 
+                            
+                            Minimum="{Binding Minimum, RelativeSource={RelativeSource TemplatedParent}}" 
+                            Maximum="{Binding Maximum, RelativeSource={RelativeSource TemplatedParent}}" 
+                            Value="{Binding Value, RelativeSource={RelativeSource TemplatedParent}}" 
+                            SmallChange="{Binding Increment, RelativeSource={RelativeSource TemplatedParent}}"
+                            LargeChange="{Binding Increment, RelativeSource={RelativeSource TemplatedParent}}"
+                            TickFrequency="{Binding TickFrequency, RelativeSource={RelativeSource TemplatedParent}}"
+                            TickPlacement="{Binding TickPlacement, RelativeSource={RelativeSource TemplatedParent}}"/>
+
+                        <RepeatButton x:Name="incRepeatButton" Grid.Column="2" Style="{StaticResource IncDecRepeatButton}" ContentTemplate="{StaticResource IncreaseGlyphNormalKey}"/>
+                        <TextBlock Grid.Column="3" Text="{Binding Text, RelativeSource={RelativeSource TemplatedParent}}" Margin="2,3,2,0" Width="{Binding TextWidth, RelativeSource={RelativeSource TemplatedParent}}" HorizontalAlignment="Right" />                        
+                    </Grid>
+                    <!--
                     <StackPanel Orientation="Horizontal">
                         <RepeatButton x:Name="decRepeatButton" Style="{StaticResource IncDecRepeatButton}" ContentTemplate="{StaticResource DecreaseGlyphNormalKey}"/>
                         <Slider Margin="2,0,2,0" 
@@ -89,6 +111,7 @@
                     Width="{Binding TextWidth, RelativeSource={RelativeSource TemplatedParent}}"                                
                     HorizontalAlignment="Right" />
                     </StackPanel>
+                    -->
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

@@ -40,11 +40,11 @@ jobs:
     - name: Setup NuGet
       uses: nuget/setup-nuget@v2
 
-    - name: Add SignKeys
-      uses: Bassman2/SignKey@v1
-      with:
-        file: Bassman.snk
-        key: ${{ secrets.SIGNKEY }}
+#    - name: Add SignKeys
+#      uses: Bassman2/SignKey@v1
+#      with:
+#        file: Bassman.snk
+#        key: ${{ secrets.SIGNKEY }}
         
 #    - name: Install SHFB
 #      uses: Bassman2/setup-SHFB@v1
